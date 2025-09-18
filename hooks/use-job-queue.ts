@@ -1,6 +1,7 @@
 "use client";
 import { create } from "zustand";
 import { useEffect } from "react";
+import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { supabaseBrowser } from "@/lib/supabase-client";
 
 export type JobItem = {
@@ -119,7 +120,7 @@ export const JobQueueSubscriber = () => {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "image_jobs" },
-        (payload) => {
+        (payload: RealtimePostgresChangesPayload<JobItem>) => {
           const job = payload.new as JobItem;
           useJobQueue.setState((state) => ({
             recentJobs: [job, ...state.recentJobs.filter((item) => item.id !== job.id)].slice(0, 10),

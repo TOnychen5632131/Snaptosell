@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Stripe 未配置" }, { status: 500 });
   }
 
-  const stripe = new Stripe(stripeSecret, { apiVersion: "2023-10-16" });
+  const stripe = new Stripe(stripeSecret);
   const body = await request.arrayBuffer();
   const signature = headers().get("stripe-signature") ?? "";
 

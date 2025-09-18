@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase-server";
 
 const stripeKey = process.env.STRIPE_SECRET_KEY ?? "";
-const stripe = stripeKey ? new Stripe(stripeKey, { apiVersion: "2023-10-16" }) : null;
+const stripe = stripeKey ? new Stripe(stripeKey) : null;
 
 export async function POST() {
   if (!stripe) {

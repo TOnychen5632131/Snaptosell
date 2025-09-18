@@ -5,12 +5,16 @@ import { useProfile } from "@/hooks/use-profile";
 import { useCredits } from "@/hooks/use-credits";
 import { LogOut } from "lucide-react";
 import { useSupabase } from "@/providers/supabase-provider";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 export const SettingsDrawer = () => {
   const { isOpen, close } = settingsStore();
   const { profile } = useProfile();
   const { balance, freeUses } = useCredits();
   const supabase = useSupabase();
+  const { session } = useSessionContext();
+
+  const email = profile?.email ?? session?.user.email ?? "未知";
 
   return (
     <Dialog open={isOpen} onClose={close} className="relative z-50">
@@ -26,7 +30,7 @@ export const SettingsDrawer = () => {
           <div className="space-y-6 text-sm text-slate-600">
             <section>
               <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">账户信息</h3>
-              <p>登录邮箱：{profile?.email ?? "未知"}</p>
+              <p>登录邮箱：{email}</p>
             </section>
             <section>
               <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">积分与次数</h3>

@@ -1,5 +1,6 @@
 "use client";
 import { Coins, Gift, LogIn, LogOut, Settings } from "lucide-react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useProfile } from "@/hooks/use-profile";
 import { useCredits } from "@/hooks/use-credits";
 import { openSettingsDrawer } from "@/lib/ui-state";
@@ -8,22 +9,26 @@ import { PurchaseCreditsButton } from "@/components/actions/purchase-credits-but
 export const HeaderCard = () => {
   const { profile } = useProfile();
   const { balance, freeUses } = useCredits();
+  const { session } = useSessionContext();
+
+  const isLoggedIn = Boolean(session);
+  const displayName = profile?.display_name ?? session?.user.email ?? "EasyPic 用户";
 
   return (
     <section className="gradient-card rounded-card p-6 shadow-soft">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-primary/10">
-            {profile ? <LogIn className="h-6 w-6 text-brand-primary" /> : <LogOut className="h-6 w-6 text-slate-500" />}
+            {isLoggedIn ? <LogIn className="h-6 w-6 text-brand-primary" /> : <LogOut className="h-6 w-6 text-slate-500" />}
           </div>
           <div className="space-y-2">
             <h2 className="text-lg font-semibold text-slate-800">
-              {profile ? `欢迎回来，${profile.display_name ?? "EasyPic 用户"}` : "尚未登录"}
+              {isLoggedIn ? `欢迎回来，${displayName}` : "尚未登录"}
             </h2>
             <p className="text-sm text-slate-500">
-              {profile ? "积分与免费次数会在所有设备之间同步。" : "登录后可解锁云端修图、积分同步与邀请奖励。"}
+              {isLoggedIn ? "积分与免费次数会在所有设备之间同步。" : "登录后可解锁云端修图、积分同步与邀请奖励。"}
             </p>
-            {profile && (
+            {isLoggedIn && (
               <div className="space-y-1 text-sm">
                 <div className="flex items-center gap-2">
                   <Coins className="h-4 w-4 text-orange-500" />
@@ -38,7 +43,7 @@ export const HeaderCard = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {profile && <PurchaseCreditsButton />}
+          {isLoggedIn && <PurchaseCreditsButton />}
           <button
             onClick={openSettingsDrawer}
             className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 text-slate-600 shadow-card transition hover:bg-slate-300"

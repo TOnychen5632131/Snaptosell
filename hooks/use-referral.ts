@@ -7,10 +7,12 @@ import { useSupabase } from "@/providers/supabase-provider";
 
 const fetchReferral = async (supabase: SupabaseClient<Database>) => {
   try {
-    const [{ data: profile }, { data: state }] = await Promise.all([
+    const [{ data: rawProfile }, { data: rawState }] = await Promise.all([
       supabase.from("profiles").select("invite_code").maybeSingle(),
       supabase.from("referral_state").select("pending_inviter_id, free_uses_remaining").maybeSingle()
     ]);
+    const profile = rawProfile as { invite_code: string | null } | null;
+    const state = rawState as { pending_inviter_id: string | null; free_uses_remaining: number | null } | null;
     const inviteCode = profile?.invite_code ?? "";
     const inviteUrl = `${window.location.origin}/invite?code=${inviteCode}`;
     return {

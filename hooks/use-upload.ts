@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { supabaseBrowser } from "@/lib/supabase-client";
+import { useSupabase } from "@/providers/supabase-provider";
 import { useJobQueue } from "@/hooks/use-job-queue";
 
 const trigger = (id: string) => {
@@ -10,7 +10,7 @@ const trigger = (id: string) => {
 
 export const useUpload = () => {
   const [isUploading, setUploading] = useState(false);
-  const supabase = supabaseBrowser();
+  const supabase = useSupabase();
   const { setJob } = useJobQueue();
 
   const handleFile = async (file: File) => {

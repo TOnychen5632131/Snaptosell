@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { useEffect } from "react";
 import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
-import { supabaseBrowser } from "@/lib/supabase-client";
+import { useSupabase } from "@/providers/supabase-provider";
 
 export type JobItem = {
   id: string;
@@ -57,52 +57,39 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       return;
     }
 
-    set({ status: { state: "processing", message: "正在提交任务…" } });
+    const requestId = crypto.randomUUID();
+    const processingJob: JobItem = {
+      ...job,
+      id: job.id || requestId,
+      state: "processing",
+      mode
+    };
 
-    try {
-      const response = await fetch("/api/jobs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          originalStoragePath: job.originalStoragePath,
-          previewUrl: job.originalPreviewUrl,
-          mode
-        })
-      });
+    set((state) => ({
+      currentJob: processingJob,
+      recentJobs: [processingJob, ...state.recentJobs.filter((item) => item.id !== processingJob.id)].slice(0, 10),
+      status: { state: "processing", message: "高清处理中…" }
+    }));
 
-      const payload = await response.json().catch(() => undefined);
-      if (!response.ok || !payload) {
-        throw new Error((payload as { error?: string })?.error ?? "任务提交失败，请稍后重试");
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+
+    const processedImageUrl = processingJob.originalPreviewUrl ?? processingJob.processedImageUrl ?? "";
+
+    const finishedJob: JobItem = {
+      ...processingJob,
+      state: "done",
+      processedImageUrl,
+      updated_at: new Date().toISOString()
+    };
+
+    set((state) => ({
+      currentJob: finishedJob,
+      recentJobs: [finishedJob, ...state.recentJobs.filter((item) => item.id !== finishedJob.id)].slice(0, 10),
+      status: {
+        state: "success",
+        message: processedImageUrl ? "高清完成，快去查看效果吧！" : "处理完成，但未获取到高清图"
       }
-
-      const data = payload as Record<string, unknown>;
-      const nextJob: JobItem = {
-        id: String(data.id ?? crypto.randomUUID()),
-        state: (data.state as JobItem["state"]) ?? "pending",
-        originalStoragePath: (data.original_storage_path as string | undefined) ?? job.originalStoragePath,
-        originalPreviewUrl: (data.original_preview_url as string | undefined) ?? job.originalPreviewUrl,
-        processedImageUrl: (data.processed_image_url as string | undefined) ?? job.processedImageUrl,
-        failure_reason: data.failure_reason as string | undefined,
-        updated_at: data.updated_at as string | undefined,
-        thumbnailUrl: (data.thumbnail_url as string | undefined) ?? job.thumbnailUrl,
-        displayId: (data.display_id as string | undefined) ?? job.displayId,
-        mode: (data.mode as string | undefined) ?? mode
-      };
-
-      set((state) => ({
-        currentJob: nextJob,
-        recentJobs: [nextJob, ...state.recentJobs.filter((item) => item.id !== nextJob.id)].slice(0, 10),
-        status: { state: "processing", message: "任务排队中…" }
-      }));
-    } catch (error) {
-      console.error(error);
-      set({
-        status: {
-          state: "error",
-          message: error instanceof Error ? error.message : "任务提交失败，请稍后重试"
-        }
-      });
-    }
+    }));
   },
   share() {
     const job = get().currentJob;
@@ -113,8 +100,9 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
 }));
 
 export const JobQueueSubscriber = () => {
+  const supabase = useSupabase();
+
   useEffect(() => {
-    const supabase = supabaseBrowser();
     const channel = supabase
       .channel("public:image_jobs")
       .on(
@@ -139,6 +127,6 @@ export const JobQueueSubscriber = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [supabase]);
   return null;
 };

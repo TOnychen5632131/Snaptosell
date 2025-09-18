@@ -1,5 +1,5 @@
 "use client";
-import { Dialog, DialogPanel } from "@headlessui/react";
+import { Dialog } from "@headlessui/react";
 import { settingsStore } from "@/lib/ui-state";
 import { useProfile } from "@/hooks/use-profile";
 import { useCredits } from "@/hooks/use-credits";
@@ -16,7 +16,7 @@ export const SettingsDrawer = () => {
     <Dialog open={isOpen} onClose={close} className="relative z-50">
       <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
       <div className="fixed inset-0 flex justify-end">
-        <DialogPanel className="w-full max-w-md bg-white p-8 shadow-soft">
+        <Dialog.Panel className="w-full max-w-md bg-white p-8 shadow-soft">
           <header className="mb-6 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-slate-800">设置</h2>
             <button onClick={close} className="text-sm text-slate-400">
@@ -63,7 +63,7 @@ export const SettingsDrawer = () => {
             </button>
             <p className="text-center text-[11px] text-slate-400">版本号 1.0.0</p>
           </footer>
-        </DialogPanel>
+        </Dialog.Panel>
       </div>
     </Dialog>
   );

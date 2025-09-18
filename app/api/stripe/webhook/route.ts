@@ -1,0 +1,51 @@
+import { headers } from "next/headers";
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
+import { createClient } from "@supabase/supabase-js";
+
+export const runtime = "nodejs";
+
+const stripeSecret = process.env.STRIPE_SECRET_KEY ?? "";
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+
+export async function POST(request: Request) {
+  if (!stripeSecret || !webhookSecret) {
+    return NextResponse.json({ error: "Stripe 未配置" }, { status: 500 });
+  }
+
+  const stripe = new Stripe(stripeSecret, { apiVersion: "2023-10-16" });
+  const body = await request.arrayBuffer();
+  const signature = headers().get("stripe-signature") ?? "";
+
+  let event: Stripe.Event;
+  try {
+    event = stripe.webhooks.constructEvent(Buffer.from(body), signature, webhookSecret);
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 400 });
+  }
+
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const userId = session.metadata?.user_id;
+    if (userId) {
+      const supabase = createClient(process.env.SUPABASE_SERVICE_URL!, process.env.SUPABASE_SERVICE_ROLE!);
+      await supabase
+        .from("payments")
+        .upsert({
+          session_id: session.id,
+          user_id: userId,
+          status: "paid",
+          amount_cents: session.amount_total ?? 0,
+          credits_awarded: Number(process.env.CREDITS_PER_PURCHASE ?? "10000")
+        });
+      await supabase.rpc("award_credits", {
+        p_user: userId,
+        p_delta: Number(process.env.CREDITS_PER_PURCHASE ?? "10000"),
+        p_reason: "stripe_purchase",
+        p_session: session.id
+      });
+    }
+  }
+
+  return NextResponse.json({ received: true });
+}

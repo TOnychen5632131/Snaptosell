@@ -5,15 +5,18 @@ export const PurchaseCreditsButton = () => {
   const [loading, setLoading] = useState(false);
 
   const handlePurchase = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const res = await fetch("/api/purchase/start", { method: "POST" });
-      if (!res.ok) throw new Error("无法创建支付订单");
-      const { url } = await res.json();
-      window.location.href = url;
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok || !payload?.url) {
+        throw new Error(payload?.error ?? "无法创建支付订单");
+      }
+      window.location.href = payload.url;
     } catch (error) {
       console.error(error);
-      alert("创建支付失败，请稍后再试");
+      const message = error instanceof Error ? error.message : "创建支付失败，请稍后再试";
+      alert(message);
     } finally {
       setLoading(false);
     }

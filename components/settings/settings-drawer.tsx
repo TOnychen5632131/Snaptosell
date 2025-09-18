@@ -27,7 +27,6 @@ export const SettingsDrawer = () => {
             <section>
               <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">账户信息</h3>
               <p>登录邮箱：{profile?.email ?? "未知"}</p>
-              {profile?.apple_sub && <p>Apple ID: {profile.apple_sub.slice(0, 8)}…</p>}
             </section>
             <section>
               <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">积分与次数</h3>

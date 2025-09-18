@@ -8,7 +8,7 @@ import { useSupabase } from "@/providers/supabase-provider";
 type CreditState = { balance: number; freeuses: number };
 
 const fetchCredits = async (supabase: SupabaseClient<Database>): Promise<CreditState> => {
-  const { data, error } = await supabase.rpc("get_current_balance");
+  const { data, error } = await supabase.rpc<number[]>("get_current_balance");
   if (error) {
     console.warn("Failed to fetch balance", error);
     return { balance: 0, freeuses: 0 };

@@ -28,6 +28,7 @@ type JobQueueState = {
   openJob: (id: string) => void;
   startJob: (mode: string, supabase: SupabaseBrowserClient, options?: { costCredits?: number }) => Promise<void>;
   share: () => void;
+  download: () => void;
   isSubmitting: boolean;
 };
 
@@ -189,6 +190,36 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
     if (!job?.processedImageUrl) return;
     navigator.clipboard.writeText(job.processedImageUrl);
     set({ status: { state: "success", message: "链接已复制，可分享给好友" } });
+  },
+  async download() {
+    const job = get().currentJob;
+    if (!job?.processedImageUrl) return;
+
+    try {
+      const response = await fetch(job.processedImageUrl, { mode: "cors" });
+      if (!response.ok) throw new Error("下载失败，请稍后再试");
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      const extension = blob.type.includes("png") ? "png" : blob.type.includes("jpeg") ? "jpg" : "png";
+      const name = job.displayId ?? job.id.slice(0, 8);
+      anchor.href = blobUrl;
+      anchor.download = `snaptosell-${name}.${extension}`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(blobUrl);
+      set({ status: { state: "success", message: "图片已保存，可在下载目录查看" } });
+    } catch (error) {
+      console.error(error);
+      // iOS Safari download attribute 不可靠，退回到打开新窗口
+      if (job.processedImageUrl) {
+        window.open(job.processedImageUrl, "_blank", "noopener,noreferrer");
+        set({ status: { state: "success", message: "已在新窗口打开图片，可长按保存" } });
+        return;
+      }
+      set({ status: { state: "error", message: "保存失败，请稍后再试" } });
+    }
   }
 }));
 

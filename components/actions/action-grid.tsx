@@ -1,5 +1,5 @@
 "use client";
-import { Camera, ImagePlus, Loader2, Package, Share2, Sparkles } from "lucide-react";
+import { Camera, Download, ImagePlus, Loader2, Package, Share2, Sparkles } from "lucide-react";
 import { useUpload } from "@/hooks/use-upload";
 import { useJobQueue } from "@/hooks/use-job-queue";
 import { useSupabase } from "@/providers/supabase-provider";
@@ -20,7 +20,7 @@ export const ActionGrid = () => {
     <>
       <input id="camera-input" type="file" accept="image/*" capture="environment" className="hidden" onChange={onChange} />
       <input id="library-input" type="file" accept="image/*" className="hidden" onChange={onChange} />
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
         <button className="action-button bg-gradient-to-br from-blue-500 to-blue-600 text-white" onClick={triggerCamera} disabled={isPreparing || isSubmitting}>
           <Camera className="h-6 w-6" />
           <span>拍摄商品图</span>
@@ -48,6 +48,14 @@ export const ActionGrid = () => {
         <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={share} disabled={!currentJob?.processedImageUrl}>
           <Share2 className="h-6 w-6 text-brand-primary" />
           <span>分享与下载</span>
+        </button>
+        <button
+          className="action-button bg-white text-slate-700 hover:bg-slate-100"
+          onClick={download}
+          disabled={!currentJob?.processedImageUrl}
+        >
+          <Download className="h-6 w-6 text-brand-primary" />
+          <span>保存到相册</span>
         </button>
       </div>
     </>

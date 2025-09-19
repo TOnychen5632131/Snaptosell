@@ -12,8 +12,7 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   const { originalStoragePath, previewUrl, mode } = body;
-  const { data, error } = await supabase
-    .from("image_jobs")
+  const { data, error } = await (supabase.from("image_jobs") as any)
     .insert({
       user_id: user.id,
       original_storage_path: originalStoragePath,

@@ -53,6 +53,9 @@ export interface Database {
         };
       };
     };
+    Views: {
+      [_ in never]: never;
+    };
     Functions: {
       award_credits: {
         Args: {
@@ -71,6 +74,12 @@ export interface Database {
         Args: Record<string, never>;
         Returns: { success: boolean } | null;
       };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
     };
   };
 }

@@ -2,11 +2,13 @@
 import { Camera, ImagePlus, Loader2, Share2, Sparkles } from "lucide-react";
 import { useUpload } from "@/hooks/use-upload";
 import { useJobQueue } from "@/hooks/use-job-queue";
+import { useSupabase } from "@/providers/supabase-provider";
 import { ChangeEvent } from "react";
 
 export const ActionGrid = () => {
-  const { triggerCamera, triggerLibrary, isUploading, handleFile } = useUpload();
-  const { currentJob, startJob, share } = useJobQueue();
+  const { triggerCamera, triggerLibrary, isPreparing, handleFile } = useUpload();
+  const { currentJob, startJob, share, isSubmitting } = useJobQueue();
+  const supabase = useSupabase();
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -19,21 +21,21 @@ export const ActionGrid = () => {
       <input id="camera-input" type="file" accept="image/*" capture="environment" className="hidden" onChange={onChange} />
       <input id="library-input" type="file" accept="image/*" className="hidden" onChange={onChange} />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <button className="action-button bg-gradient-to-br from-blue-500 to-blue-600 text-white" onClick={triggerCamera} disabled={isUploading}>
+        <button className="action-button bg-gradient-to-br from-blue-500 to-blue-600 text-white" onClick={triggerCamera} disabled={isPreparing || isSubmitting}>
           <Camera className="h-6 w-6" />
           <span>拍摄商品图</span>
         </button>
-        <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={triggerLibrary} disabled={isUploading}>
+        <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={triggerLibrary} disabled={isPreparing || isSubmitting}>
           <ImagePlus className="h-6 w-6 text-brand-primary" />
           <span>从相册选择</span>
         </button>
         <button
           className="action-button bg-gradient-to-br from-emerald-500 to-emerald-600 text-white disabled:from-slate-400 disabled:to-slate-500"
-          onClick={() => startJob("enhance")}
-          disabled={!currentJob?.originalStoragePath || isUploading}
+          onClick={() => startJob("enhance", supabase)}
+          disabled={isSubmitting || (!currentJob?.localFile && !currentJob?.originalStoragePath)}
         >
-          {isUploading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Sparkles className="h-6 w-6" />}
-          <span>{isUploading ? "上传中…" : "增强画质"}</span>
+          {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : <Sparkles className="h-6 w-6" />}
+          <span>{isSubmitting ? "上传中…" : "增强画质"}</span>
         </button>
         <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={share} disabled={!currentJob?.processedImageUrl}>
           <Share2 className="h-6 w-6 text-brand-primary" />

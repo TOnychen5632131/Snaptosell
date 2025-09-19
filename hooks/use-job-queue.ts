@@ -1,8 +1,9 @@
 "use client";
 import { create } from "zustand";
 import { useEffect } from "react";
-import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+import type { RealtimePostgresChangesPayload, SupabaseClient } from "@supabase/supabase-js";
 import { useSupabase } from "@/providers/supabase-provider";
+import type { Database } from "@/types/supabase";
 
 export type JobItem = {
   id: string;
@@ -15,6 +16,7 @@ export type JobItem = {
   thumbnailUrl?: string;
   displayId?: string;
   mode?: string;
+  localFile?: File;
 };
 
 type JobQueueState = {
@@ -23,17 +25,19 @@ type JobQueueState = {
   status?: { state: "processing" | "success" | "error"; message?: string };
   setJob: (job: JobItem) => void;
   openJob: (id: string) => void;
-  startJob: (mode: string) => Promise<void>;
+  startJob: (mode: string, supabase: SupabaseClient<Database>) => Promise<void>;
   share: () => void;
+  isSubmitting: boolean;
 };
 
 export const useJobQueue = create<JobQueueState>((set, get) => ({
   recentJobs: [],
+  isSubmitting: false,
   setJob(job) {
     set((state) => ({
       currentJob: job,
       recentJobs: [job, ...state.recentJobs.filter((item) => item.id !== job.id)].slice(0, 10),
-      status: { state: "processing", message: "任务已创建" }
+      status: { state: "processing", message: "照片已准备，可提交处理" }
     }));
   },
   openJob(id) {
@@ -45,51 +49,89 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       return { currentJob: job, status: undefined };
     });
   },
-  async startJob(mode) {
+  async startJob(mode, supabase) {
+    if (get().isSubmitting) return;
     const job = get().currentJob;
-    if (!job?.originalStoragePath) {
-      set({ status: { state: "error", message: "请先上传商品照片" } });
+    if (!job) {
+      set({ status: { state: "error", message: "请先选择商品照片" } });
+      return;
+    }
+
+    if (!job.originalStoragePath && !job.localFile) {
+      set({ status: { state: "error", message: "请先选择商品照片" } });
       return;
     }
 
     if (job.state === "pending" || job.state === "processing") {
-      set({ status: { state: "processing", message: "任务处理中，请稍候…" } });
-      return;
+      set({ status: { state: "processing", message: "已提交任务，请稍候…" } });
+      // Prevent duplicate submissions while we wait for realtime updates.
+      if (!job.localFile && job.originalStoragePath) {
+        return;
+      }
     }
 
-    const requestId = crypto.randomUUID();
-    const processingJob: JobItem = {
-      ...job,
-      id: job.id || requestId,
-      state: "processing",
-      mode
-    };
+    set({ isSubmitting: true, status: { state: "processing", message: "上传中，请稍候…" } });
 
-    set((state) => ({
-      currentJob: processingJob,
-      recentJobs: [processingJob, ...state.recentJobs.filter((item) => item.id !== processingJob.id)].slice(0, 10),
-      status: { state: "processing", message: "高清处理中…" }
-    }));
+    let storagePath = job.originalStoragePath;
+    const previewUrl = job.originalPreviewUrl;
 
-    await new Promise((resolve) => setTimeout(resolve, 1800));
+    try {
+      if (!storagePath && job.localFile) {
+        const file = job.localFile;
+        const ext = file.name.split(".").pop() ?? "jpg";
+        const fileName = `${crypto.randomUUID()}.${ext}`;
+        storagePath = `uploads/${fileName}`;
 
-    const processedImageUrl = processingJob.originalPreviewUrl ?? processingJob.processedImageUrl ?? "";
+        const { error: uploadError } = await supabase.storage.from("uploads").upload(storagePath, file, {
+          cacheControl: "3600",
+          upsert: true
+        });
 
-    const finishedJob: JobItem = {
-      ...processingJob,
-      state: "done",
-      processedImageUrl,
-      updated_at: new Date().toISOString()
-    };
-
-    set((state) => ({
-      currentJob: finishedJob,
-      recentJobs: [finishedJob, ...state.recentJobs.filter((item) => item.id !== finishedJob.id)].slice(0, 10),
-      status: {
-        state: "success",
-        message: processedImageUrl ? "高清完成，快去查看效果吧！" : "处理完成，但未获取到高清图"
+        if (uploadError) throw uploadError;
       }
-    }));
+
+      if (!storagePath) {
+        throw new Error("无法确定上传路径");
+      }
+
+      const { data, error: funcError } = await supabase.functions.invoke("jobs-create", {
+        body: {
+          originalStoragePath: storagePath,
+          previewUrl,
+          mode
+        }
+      });
+
+      if (funcError) throw funcError;
+      if (!data) throw new Error("任务创建失败");
+
+      const submittedJob: JobItem = {
+        ...job,
+        id: data.id,
+        state: data.state,
+        originalStoragePath: data.original_storage_path ?? storagePath,
+        processedImageUrl: data.processed_image_url,
+        updated_at: data.updated_at ?? new Date().toISOString(),
+        mode,
+        localFile: undefined
+      };
+
+      set((state) => ({
+        currentJob: submittedJob,
+        recentJobs: [submittedJob, ...state.recentJobs.filter((item) => item.id !== submittedJob.id)].slice(0, 10),
+        status: { state: "processing", message: "任务已提交，处理中…" }
+      }));
+    } catch (error) {
+      console.error(error);
+      set((state) => ({
+        currentJob: storagePath
+          ? { ...state.currentJob, originalStoragePath: storagePath }
+          : state.currentJob,
+        status: { state: "error", message: "提交失败，请稍后再试" }
+      }));
+    } finally {
+      set({ isSubmitting: false });
+    }
   },
   share() {
     const job = get().currentJob;

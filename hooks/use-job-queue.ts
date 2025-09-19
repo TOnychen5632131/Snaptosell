@@ -25,7 +25,7 @@ type JobQueueState = {
   status?: { state: "processing" | "success" | "error"; message?: string };
   setJob: (job: JobItem) => void;
   openJob: (id: string) => void;
-  startJob: (mode: string, supabase: SupabaseClient<any>) => Promise<void>;
+  startJob: (mode: string, supabase: SupabaseClient<Database>) => Promise<void>;
   share: () => void;
   isSubmitting: boolean;
 };
@@ -49,7 +49,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       return { currentJob: job, status: undefined };
     });
   },
-  async startJob(mode, supabase) {
+  async startJob(mode, supabase: SupabaseClient<Database>) {
     if (get().isSubmitting) return;
     const job = get().currentJob;
     if (!job) {

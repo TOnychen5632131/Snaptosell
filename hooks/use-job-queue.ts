@@ -25,7 +25,7 @@ type JobQueueState = {
   status?: { state: "processing" | "success" | "error"; message?: string };
   setJob: (job: JobItem) => void;
   openJob: (id: string) => void;
-  startJob: (mode: string, supabase: SupabaseClient<Database>) => Promise<void>;
+  startJob: (mode: string, supabase: SupabaseClient<any>) => Promise<void>;
   share: () => void;
   isSubmitting: boolean;
 };

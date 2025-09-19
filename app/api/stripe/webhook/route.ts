@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
-import { ensureUserProfile } from "@/lib/supabase-admin";
+import { ensureUserProfile, setCurrentBalance } from "@/lib/supabase-admin";
 import type { Database } from "@/types/supabase";
 
 export const runtime = "nodejs";
@@ -50,12 +50,31 @@ export async function POST(request: Request) {
           amount_cents: session.amount_total ?? 0,
           credits_awarded: Number(process.env.CREDITS_PER_PURCHASE ?? "10000")
         });
+      const { data: currentRow, error: currentError } = await (supabase.from("current_balance") as any)
+        .select("balance")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (currentError && currentError.code !== "PGRST116") {
+        console.error("current_balance error", currentError);
+        return NextResponse.json({ error: "账户信息异常" }, { status: 500 });
+      }
+
+      const currentBalance = Number(currentRow?.balance ?? 0) || 0;
+
       await (supabase as any).rpc("award_credits", {
         p_user: userId,
         p_delta: Number(process.env.CREDITS_PER_PURCHASE ?? "10000"),
         p_reason: "stripe_purchase",
         p_session: session.id
       });
+
+      const newBalance = currentBalance + Number(process.env.CREDITS_PER_PURCHASE ?? "10000");
+      const balanceUpdateError = await setCurrentBalance(supabase, userId, newBalance);
+
+      if (balanceUpdateError) {
+        console.error("setCurrentBalance error", balanceUpdateError);
+      }
     }
   }
 

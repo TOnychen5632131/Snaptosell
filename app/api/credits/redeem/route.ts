@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/supabase";
-import { ensureUserProfile } from "@/lib/supabase-admin";
+import { ensureUserProfile, setCurrentBalance } from "@/lib/supabase-admin";
 
 const SECRET_CODE = (process.env.NEXT_PUBLIC_INVITE_GIFT_CODE ?? "520").trim();
 const BONUS_AMOUNT = Number(process.env.NEXT_PUBLIC_INVITE_GIFT_BONUS ?? "1000");
@@ -45,6 +45,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "账户信息异常，请稍后再试" }, { status: 500 });
   }
 
+  const { data: currentRow, error: currentError } = await (serviceClient.from("current_balance") as any)
+    .select("balance")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (currentError && currentError.code !== "PGRST116") {
+    console.error("current_balance error", currentError);
+    return NextResponse.json({ error: "无法获取积分余额" }, { status: 500 });
+  }
+
+  const currentBalance = Number(currentRow?.balance ?? 0) || 0;
   const sessionId = `invite-gift-${user.id}`;
 
   const adminClient = serviceClient as any;
@@ -63,11 +74,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status });
   }
 
-  const { data: balanceData, error: balanceError } = await supabase.rpc("get_current_balance");
+  const newBalance = currentBalance + BONUS_AMOUNT;
+  const balanceUpdateError = await setCurrentBalance(serviceClient, user.id, newBalance);
 
-  if (balanceError) {
-    return NextResponse.json({ success: true }, { status: 200 });
+  if (balanceUpdateError) {
+    console.error("setCurrentBalance error", balanceUpdateError);
   }
 
-  return NextResponse.json({ success: true, balance: balanceData }, { status: 200 });
+  return NextResponse.json({ success: true, balance: newBalance }, { status: 200 });
 }

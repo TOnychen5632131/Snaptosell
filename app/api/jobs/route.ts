@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase-server";
-import { ensureUserProfile } from "@/lib/supabase-admin";
+import { ensureUserProfile, setCurrentBalance } from "@/lib/supabase-admin";
 import type { Database } from "@/types/supabase";
 
 const INSUFFICIENT_CREDITS_MESSAGE = "积分不足，请先充值或邀请好友获取积分";
@@ -35,15 +35,21 @@ export async function POST(request: Request) {
 
   const costCredits = Number.isFinite(rawCost) ? Math.max(0, Math.floor(Number(rawCost))) : 0;
 
+  let currentBalance = 0;
+
   if (costCredits > 0) {
-    const { data: balanceData, error: balanceError } = await supabase.rpc("get_current_balance");
-    if (balanceError) {
-      console.error("get_current_balance error", balanceError);
+    const { data: balanceRow, error: balanceError } = await supabase
+      .from("current_balance")
+      .select("balance")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (balanceError && balanceError.code !== "PGRST116") {
+      console.error("current_balance error", balanceError);
       return NextResponse.json({ error: "无法获取积分余额" }, { status: 500 });
     }
 
-    const values = Array.isArray(balanceData) ? (balanceData as number[]) : [];
-    const currentBalance = Number(values[0] ?? 0) || 0;
+    currentBalance = Number(balanceRow?.balance ?? 0) || 0;
 
     if (currentBalance < costCredits) {
       return NextResponse.json({ error: INSUFFICIENT_CREDITS_MESSAGE }, { status: 402 });
@@ -80,6 +86,13 @@ export async function POST(request: Request) {
       console.error("award_credits deduction error", deductionError);
       return NextResponse.json({ error: "扣除积分失败，请稍后再试" }, { status: 500 });
     }
+
+    const balanceAfterDeduction = currentBalance - costCredits;
+    const balanceUpdateError = await setCurrentBalance(serviceClient, user.id, balanceAfterDeduction);
+    if (balanceUpdateError) {
+      console.error("setCurrentBalance error", balanceUpdateError);
+      return NextResponse.json({ error: "扣除积分失败，请稍后再试" }, { status: 500 });
+    }
   }
 
   const { data, error } = await (serviceClient.from("image_jobs") as any)
@@ -104,6 +117,7 @@ export async function POST(request: Request) {
         p_reason: "job:refund",
         p_session: `${sessionKey}-refund-${Date.now()}`
       });
+      await setCurrentBalance(serviceClient, user.id, currentBalance);
     }
     return NextResponse.json({ error: "任务创建失败，请稍后再试" }, { status: 500 });
   }

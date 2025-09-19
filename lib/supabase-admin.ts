@@ -33,5 +33,26 @@ export const ensureUserProfile = async (
     return referralError;
   }
 
+  const { error: balanceError } = await (client.from("current_balance") as any).insert(
+    { user_id: id, balance: 0 },
+    { onConflict: "user_id", ignoreDuplicates: true }
+  );
+
+  if (balanceError) {
+    return balanceError;
+  }
+
   return null;
+};
+
+export const setCurrentBalance = async (
+  client: SupabaseServiceClient,
+  userId: string,
+  balance: number
+): Promise<PostgrestError | null> => {
+  const { error } = await (client.from("current_balance") as any).upsert(
+    { user_id: userId, balance },
+    { onConflict: "user_id" }
+  );
+  return error ?? null;
 };

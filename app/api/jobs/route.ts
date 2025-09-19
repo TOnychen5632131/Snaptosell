@@ -1,31 +1,112 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase-server";
+import { ensureUserProfile } from "@/lib/supabase-admin";
+import type { Database } from "@/types/supabase";
+
+const INSUFFICIENT_CREDITS_MESSAGE = "积分不足，请先充值或邀请好友获取积分";
 
 export async function POST(request: Request) {
   const supabase = supabaseServer();
   const {
-    data: { user }
+    data: { user },
+    error: userError
   } = await supabase.auth.getUser();
-  if (!user) {
+
+  if (userError || !user) {
     return NextResponse.json({ error: "未登录" }, { status: 401 });
   }
 
-  const body = await request.json();
-  const { originalStoragePath, previewUrl, mode } = body;
-  const { data, error } = await (supabase.from("image_jobs") as any)
+  const body = await request.json().catch(() => null);
+  if (!body) {
+    return NextResponse.json({ error: "请求体无效" }, { status: 400 });
+  }
+
+  const { originalStoragePath, previewUrl, mode = "enhance", costCredits: rawCost } = body as {
+    originalStoragePath?: string;
+    previewUrl?: string;
+    mode?: string;
+    costCredits?: number;
+  };
+
+  if (typeof originalStoragePath !== "string" || !originalStoragePath) {
+    return NextResponse.json({ error: "缺少有效的图片路径" }, { status: 400 });
+  }
+
+  const costCredits = Number.isFinite(rawCost) ? Math.max(0, Math.floor(Number(rawCost))) : 0;
+
+  if (costCredits > 0) {
+    const { data: balanceData, error: balanceError } = await supabase.rpc("get_current_balance");
+    if (balanceError) {
+      console.error("get_current_balance error", balanceError);
+      return NextResponse.json({ error: "无法获取积分余额" }, { status: 500 });
+    }
+
+    const values = Array.isArray(balanceData) ? (balanceData as number[]) : [];
+    const currentBalance = Number(values[0] ?? 0) || 0;
+
+    if (currentBalance < costCredits) {
+      return NextResponse.json({ error: INSUFFICIENT_CREDITS_MESSAGE }, { status: 402 });
+    }
+  }
+
+  const serviceUrl = process.env.SUPABASE_SERVICE_URL;
+  const serviceRole = process.env.SUPABASE_SERVICE_ROLE;
+
+  if (!serviceUrl || !serviceRole) {
+    return NextResponse.json({ error: "服务未配置" }, { status: 500 });
+  }
+
+  const serviceClient = createClient<Database>(serviceUrl, serviceRole, { auth: { persistSession: false } });
+
+  const ensureError = await ensureUserProfile(serviceClient, { id: user.id, email: user.email });
+  if (ensureError) {
+    console.error("ensureUserProfile error", ensureError);
+    return NextResponse.json({ error: "账户信息异常，请稍后再试" }, { status: 500 });
+  }
+
+  const jobId = crypto.randomUUID();
+  const sessionKey = `job-${jobId}`;
+
+  if (costCredits > 0) {
+    const { error: deductionError } = await serviceClient.rpc("award_credits", {
+      p_user: user.id,
+      p_delta: -costCredits,
+      p_reason: `job:${mode}`,
+      p_session: sessionKey
+    });
+
+    if (deductionError) {
+      console.error("award_credits deduction error", deductionError);
+      return NextResponse.json({ error: "扣除积分失败，请稍后再试" }, { status: 500 });
+    }
+  }
+
+  const { data, error } = await serviceClient
+    .from("image_jobs")
     .insert({
+      id: jobId,
       user_id: user.id,
       original_storage_path: originalStoragePath,
       original_preview_url: previewUrl,
-      mode: mode ?? "enhance",
+      mode,
       state: "pending",
-      cost_credits: 1
+      cost_credits: costCredits
     })
     .select()
     .single();
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error || !data) {
+    console.error("create image job error", error);
+    if (costCredits > 0) {
+      await serviceClient.rpc("award_credits", {
+        p_user: user.id,
+        p_delta: costCredits,
+        p_reason: "job:refund",
+        p_session: `${sessionKey}-refund-${Date.now()}`
+      });
+    }
+    return NextResponse.json({ error: "任务创建失败，请稍后再试" }, { status: 500 });
   }
 
   return NextResponse.json(data);

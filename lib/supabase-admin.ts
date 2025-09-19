@@ -24,13 +24,9 @@ export const ensureUserProfile = async (
     return profileError;
   }
 
-  const { error: referralError } = await client.from("referral_state").upsert(
-    {
-      user_id: id,
-      free_uses_remaining: 0
-    },
-    { onConflict: "user_id" }
-  );
+  const { error: referralError } = await client
+    .from("referral_state")
+    .upsert({ user_id: id }, { onConflict: "user_id" });
 
   if (referralError) {
     return referralError;

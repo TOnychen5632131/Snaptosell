@@ -29,7 +29,7 @@ export async function POST() {
 
   const sessionId = `secret-${user.id}-${Date.now()}`;
 
-  const { error: awardError } = await serviceClient.rpc("award_credits", {
+  const { error: awardError } = await (serviceClient as any).rpc("award_credits", {
     p_user: user.id,
     p_delta: BOOST_AMOUNT,
     p_reason: "secret_tap",

@@ -18,6 +18,23 @@ export interface Database {
           invite_code: string | null;
           created_at: string | null;
         };
+        Insert: {
+          id?: string;
+          email?: string | null;
+          display_name?: string | null;
+          apple_sub?: string | null;
+          invite_code?: string | null;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          email?: string | null;
+          display_name?: string | null;
+          apple_sub?: string | null;
+          invite_code?: string | null;
+          created_at?: string | null;
+        };
+        Relationships: [];
       };
       image_jobs: {
         Row: {
@@ -33,6 +50,33 @@ export interface Database {
           created_at: string | null;
           updated_at: string | null;
         };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          state?: "pending" | "processing" | "done" | "failed";
+          mode?: string | null;
+          original_storage_path?: string | null;
+          original_preview_url?: string | null;
+          processed_image_url?: string | null;
+          failure_reason?: string | null;
+          cost_credits?: number | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          state?: "pending" | "processing" | "done" | "failed";
+          mode?: string | null;
+          original_storage_path?: string | null;
+          original_preview_url?: string | null;
+          processed_image_url?: string | null;
+          failure_reason?: string | null;
+          cost_credits?: number | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
       };
       credit_ledger: {
         Row: {
@@ -44,6 +88,25 @@ export interface Database {
           stripe_session_id: string | null;
           created_at: string | null;
         };
+        Insert: {
+          id?: number;
+          user_id: string;
+          delta: number;
+          reason?: string | null;
+          job_id?: string | null;
+          stripe_session_id?: string | null;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: number;
+          user_id?: string;
+          delta?: number;
+          reason?: string | null;
+          job_id?: string | null;
+          stripe_session_id?: string | null;
+          created_at?: string | null;
+        };
+        Relationships: [];
       };
       referral_state: {
         Row: {
@@ -51,11 +114,20 @@ export interface Database {
           pending_inviter_id: string | null;
           free_uses_remaining: number | null;
         };
+        Insert: {
+          user_id: string;
+          pending_inviter_id?: string | null;
+          free_uses_remaining?: number | null;
+        };
+        Update: {
+          user_id?: string;
+          pending_inviter_id?: string | null;
+          free_uses_remaining?: number | null;
+        };
+        Relationships: [];
       };
     };
-    Views: {
-      [_ in never]: never;
-    };
+    Views: Record<string, never>;
     Functions: {
       award_credits: {
         Args: {
@@ -75,11 +147,7 @@ export interface Database {
         Returns: { success: boolean } | null;
       };
     };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 }

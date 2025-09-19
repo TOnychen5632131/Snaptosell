@@ -126,6 +126,33 @@ export interface Database {
         };
         Relationships: [];
       };
+      payments: {
+        Row: {
+          session_id: string;
+          user_id: string;
+          status: string | null;
+          amount_cents: number | null;
+          credits_awarded: number | null;
+          created_at: string | null;
+        };
+        Insert: {
+          session_id: string;
+          user_id: string;
+          status?: string | null;
+          amount_cents?: number | null;
+          credits_awarded?: number | null;
+          created_at?: string | null;
+        };
+        Update: {
+          session_id?: string;
+          user_id?: string;
+          status?: string | null;
+          amount_cents?: number | null;
+          credits_awarded?: number | null;
+          created_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

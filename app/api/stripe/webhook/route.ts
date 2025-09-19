@@ -2,6 +2,8 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
+import { ensureUserProfile } from "@/lib/supabase-admin";
+import type { Database } from "@/types/supabase";
 
 export const runtime = "nodejs";
 
@@ -28,7 +30,18 @@ export async function POST(request: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     const userId = session.metadata?.user_id;
     if (userId) {
-      const supabase = createClient(process.env.SUPABASE_SERVICE_URL!, process.env.SUPABASE_SERVICE_ROLE!);
+      const supabase = createClient<Database>(process.env.SUPABASE_SERVICE_URL!, process.env.SUPABASE_SERVICE_ROLE!);
+
+      const ensureError = await ensureUserProfile(supabase, {
+        id: userId,
+        email: session.customer_details?.email ?? null
+      });
+
+      if (ensureError) {
+        console.error("ensureUserProfile error", ensureError);
+        return NextResponse.json({ error: "账户信息异常" }, { status: 500 });
+      }
+
       await supabase
         .from("payments")
         .upsert({

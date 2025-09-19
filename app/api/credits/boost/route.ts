@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/supabase";
+import { ensureUserProfile } from "@/lib/supabase-admin";
 
 const BOOST_AMOUNT = Number(process.env.NEXT_PUBLIC_TEST_BOOST_AMOUNT ?? "1000");
 
@@ -27,9 +28,16 @@ export async function POST() {
     auth: { persistSession: false }
   });
 
+  const ensureError = await ensureUserProfile(serviceClient, { id: user.id, email: user.email });
+
+  if (ensureError) {
+    console.error("ensureUserProfile error", ensureError);
+    return NextResponse.json({ error: "账户信息异常，请稍后再试" }, { status: 500 });
+  }
+
   const sessionId = `secret-${user.id}-${Date.now()}`;
 
-  const { error: awardError } = await (serviceClient as any).rpc("award_credits", {
+  const { error: awardError } = await serviceClient.rpc("award_credits", {
     p_user: user.id,
     p_delta: BOOST_AMOUNT,
     p_reason: "secret_tap",

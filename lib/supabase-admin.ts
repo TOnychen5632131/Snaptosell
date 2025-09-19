@@ -33,7 +33,7 @@ export const ensureUserProfile = async (
     return referralError;
   }
 
-  const { error: balanceError } = await (client.from("current_balance") as any).insert(
+  const { error: balanceError } = await (client.from("current_balance") as any).upsert(
     { user_id: id, balance: 0 },
     { onConflict: "user_id", ignoreDuplicates: true }
   );

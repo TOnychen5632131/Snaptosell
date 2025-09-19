@@ -4,11 +4,15 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useSupabase } from "@/providers/supabase-provider";
 import type { SupabaseBrowserClient } from "@/providers/supabase-provider";
 
-const fetchReferral = async (supabase: SupabaseBrowserClient) => {
+const fetchReferral = async (supabase: SupabaseBrowserClient, userId: string) => {
   try {
     const [{ data: rawProfile }, { data: rawState }] = await Promise.all([
       supabase.from("profiles").select("invite_code").maybeSingle(),
-      supabase.from("referral_state").select("pending_inviter_id, free_uses_remaining").maybeSingle()
+      supabase
+        .from("referral_state")
+        .select("pending_inviter_id, free_uses_remaining")
+        .eq("user_id", userId)
+        .maybeSingle()
     ]);
     const profile = rawProfile as { invite_code: string | null } | null;
     const state = rawState as { pending_inviter_id: string | null; free_uses_remaining: number | null } | null;
@@ -32,7 +36,9 @@ const fetchReferral = async (supabase: SupabaseBrowserClient) => {
 export const useReferral = () => {
   const supabase = useSupabase();
   const { session } = useSessionContext();
-  const { data, mutate } = useSWR(typeof window === "undefined" || !session ? null : "referral", () => fetchReferral(supabase));
+  const userId = session?.user?.id;
+  const shouldFetch = typeof window !== "undefined" && Boolean(userId);
+  const { data, mutate } = useSWR(shouldFetch && userId ? (["referral", userId] as const) : null, ([, id]) => fetchReferral(supabase, id));
 
   const shareInvite = async () => {
     if (!data?.inviteUrl) return;

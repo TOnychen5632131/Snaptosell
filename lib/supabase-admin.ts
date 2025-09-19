@@ -26,7 +26,8 @@ export const ensureUserProfile = async (
 
   const { error: referralError } = await client.from("referral_state").upsert(
     {
-      user_id: id
+      user_id: id,
+      free_uses_remaining: 0
     },
     { onConflict: "user_id" }
   );

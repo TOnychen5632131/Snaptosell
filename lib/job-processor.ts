@@ -168,7 +168,6 @@ export const processImageJob = async (
       original_preview_url: job.original_preview_url ?? processedImageUrl,
       mode: job.mode ?? "product",
       cost_credits: job.cost_credits ?? 0,
-      thumbnail_url: processedImageUrl,
       original_storage_path: job.original_storage_path,
     })
     .eq("id", job.id)

@@ -128,7 +128,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
         throw new Error(message);
       }
 
-      const data = payload as {
+      const rawJob = (payload?.imageJob ?? payload) as {
         id: string;
         state: JobItem["state"];
         original_storage_path?: string | null;
@@ -140,6 +140,8 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
         display_id?: string | null;
         thumbnail_url?: string | null;
       };
+
+      const data = rawJob;
 
       const submittedJob: JobItem = {
         ...job,
@@ -161,6 +163,11 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
         recentJobs: [submittedJob, ...state.recentJobs.filter((item) => item.id !== submittedJob.id)].slice(0, 10),
         status: { state: "processing", message: "任务已提交，处理中…" }
       }));
+
+      // 如果接口返回最新积分，触发 useCredits 重新获取
+      if (typeof payload?.balance === "number" && typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("credits:updated"));
+      }
     } catch (error) {
       console.error(error);
       set((state) => {

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase-server";
 import { ensureUserProfile, setCurrentBalance } from "@/lib/supabase-admin";
+import { processImageJob } from "@/lib/job-processor";
 import type { Database } from "@/types/supabase";
 
 const INSUFFICIENT_CREDITS_MESSAGE = "积分不足，请先充值或邀请好友获取积分";
@@ -36,6 +37,7 @@ export async function POST(request: Request) {
   const costCredits = Number.isFinite(rawCost) ? Math.max(0, Math.floor(Number(rawCost))) : 0;
 
   let currentBalance = 0;
+  let balanceAfterDeduction = 0;
 
   if (costCredits > 0) {
     const { data: balanceRow, error: balanceError } = await supabase
@@ -54,6 +56,10 @@ export async function POST(request: Request) {
     if (currentBalance < costCredits) {
       return NextResponse.json({ error: INSUFFICIENT_CREDITS_MESSAGE }, { status: 402 });
     }
+
+    balanceAfterDeduction = currentBalance - costCredits;
+  } else {
+    balanceAfterDeduction = currentBalance;
   }
 
   const serviceUrl = process.env.SUPABASE_SERVICE_URL;
@@ -87,7 +93,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "扣除积分失败，请稍后再试" }, { status: 500 });
     }
 
-    const balanceAfterDeduction = currentBalance - costCredits;
     const balanceUpdateError = await setCurrentBalance(serviceClient, user.id, balanceAfterDeduction);
     if (balanceUpdateError) {
       console.error("setCurrentBalance error", balanceUpdateError);
@@ -122,5 +127,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "任务创建失败，请稍后再试" }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  try {
+    const processedJob = await processImageJob(serviceClient, data);
+    return NextResponse.json({ success: true, jobId, mode, costCredits, imageJob: processedJob, balance: balanceAfterDeduction });
+  } catch (processingError) {
+    console.error("processImageJob error", processingError);
+
+    if (costCredits > 0) {
+      await (serviceClient as any).rpc("award_credits", {
+        p_user: user.id,
+        p_delta: costCredits,
+        p_reason: "job:refund",
+        p_session: `${sessionKey}-processing-failed-${Date.now()}`
+      });
+      await setCurrentBalance(serviceClient, user.id, currentBalance);
+    }
+
+    await (serviceClient.from("image_jobs") as any)
+      .update({ state: "failed", failure_reason: processingError instanceof Error ? processingError.message : "生成失败" })
+      .eq("id", jobId);
+
+    const message = processingError instanceof Error ? processingError.message : "生成失败，请稍后再试";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

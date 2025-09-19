@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import useSWR from "swr";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useSupabase } from "@/providers/supabase-provider";
@@ -30,9 +31,18 @@ export const useCredits = () => {
   const { session } = useSessionContext();
   const userId = session?.user?.id;
   const { data, mutate } = useSWR(
-    userId ? ( ["credits", userId] as const ) : null,
+    userId ? (["credits", userId] as const) : null,
     ([, id]) => fetchCredits(supabase, id),
     { refreshInterval: 60000 }
   );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handler = () => mutate();
+    window.addEventListener("credits:updated", handler);
+    return () => {
+      window.removeEventListener("credits:updated", handler);
+    };
+  }, [mutate]);
   return { balance: data?.balance ?? 0, freeUses: data?.freeuses ?? 0, mutate };
 };

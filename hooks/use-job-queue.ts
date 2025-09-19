@@ -1,9 +1,9 @@
 "use client";
 import { create } from "zustand";
 import { useEffect } from "react";
-import type { RealtimePostgresChangesPayload, SupabaseClient } from "@supabase/supabase-js";
+import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { useSupabase } from "@/providers/supabase-provider";
-import type { Database } from "@/types/supabase";
+import type { SupabaseBrowserClient } from "@/providers/supabase-provider";
 
 export type JobItem = {
   id: string;
@@ -25,7 +25,7 @@ type JobQueueState = {
   status?: { state: "processing" | "success" | "error"; message?: string };
   setJob: (job: JobItem) => void;
   openJob: (id: string) => void;
-  startJob: (mode: string, supabase: SupabaseClient<Database>) => Promise<void>;
+  startJob: (mode: string, supabase: SupabaseBrowserClient) => Promise<void>;
   share: () => void;
   isSubmitting: boolean;
 };
@@ -49,7 +49,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       return { currentJob: job, status: undefined };
     });
   },
-  async startJob(mode, supabase: SupabaseClient<Database>) {
+  async startJob(mode, supabase: SupabaseBrowserClient) {
     if (get().isSubmitting) return;
     const job = get().currentJob;
     if (!job) {
@@ -123,12 +123,13 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       }));
     } catch (error) {
       console.error(error);
-      set((state) => ({
-        currentJob: storagePath
-          ? { ...state.currentJob, originalStoragePath: storagePath }
-          : state.currentJob,
-        status: { state: "error", message: "提交失败，请稍后再试" }
-      }));
+      set((state) => {
+        const currentJob = state.currentJob && storagePath ? { ...state.currentJob, originalStoragePath: storagePath } : state.currentJob;
+        return {
+          currentJob,
+          status: { state: "error", message: "提交失败，请稍后再试" }
+        };
+      });
     } finally {
       set({ isSubmitting: false });
     }

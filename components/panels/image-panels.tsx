@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { Image as ImageIcon, Sparkles } from "lucide-react";
 import { useRef } from "react";
 import { useJobQueue } from "@/hooks/use-job-queue";
@@ -31,7 +32,14 @@ const Panel = ({
         }}
         className="group relative block overflow-hidden rounded-2xl bg-slate-100 transition hover:shadow-soft"
       >
-        <img src={imageUrl} alt={title} className="mx-auto block h-full w-full rounded-2xl object-contain" />
+        <Image
+          src={imageUrl}
+          alt={title}
+          width={1024}
+          height={1024}
+          className="mx-auto block h-full w-full rounded-2xl object-contain"
+          sizes="(min-width: 1024px) 50vw, 100vw"
+        />
         <span className="absolute bottom-3 right-3 rounded-full bg-black/50 px-3 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100">
           点击放大
         </span>

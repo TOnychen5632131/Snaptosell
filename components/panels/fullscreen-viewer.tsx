@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { Dialog } from "@headlessui/react";
 import { viewerStore } from "@/lib/ui-state";
 
@@ -12,7 +13,16 @@ export const FullScreenViewer = () => {
           <button onClick={close} className="absolute right-6 top-6 text-white/70 hover:text-white">
             关闭
           </button>
-          {imageUrl && <img src={imageUrl} alt="放大图" className="max-h-[75vh] w-full object-contain" />}
+          {imageUrl && (
+            <Image
+              src={imageUrl}
+              alt="放大图"
+              width={1600}
+              height={1600}
+              className="max-h-[75vh] w-full object-contain"
+              sizes="90vw"
+            />
+          )}
         </Dialog.Panel>
       </div>
     </Dialog>

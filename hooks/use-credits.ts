@@ -1,13 +1,12 @@
 "use client";
 import useSWR from "swr";
 import { useSessionContext } from "@supabase/auth-helpers-react";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/supabase";
 import { useSupabase } from "@/providers/supabase-provider";
+import type { SupabaseBrowserClient } from "@/providers/supabase-provider";
 
 type CreditState = { balance: number; freeuses: number };
 
-const fetchCredits = async (supabase: SupabaseClient<Database>): Promise<CreditState> => {
+const fetchCredits = async (supabase: SupabaseBrowserClient): Promise<CreditState> => {
   const response = await supabase.rpc("get_current_balance");
   const { error } = response;
   const values = (response.data as unknown as number[] | null) ?? null;

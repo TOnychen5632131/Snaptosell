@@ -1,11 +1,10 @@
 "use client";
 import useSWR from "swr";
 import { useSessionContext } from "@supabase/auth-helpers-react";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/supabase";
 import { useSupabase } from "@/providers/supabase-provider";
+import type { SupabaseBrowserClient } from "@/providers/supabase-provider";
 
-const fetchReferral = async (supabase: SupabaseClient<Database>) => {
+const fetchReferral = async (supabase: SupabaseBrowserClient) => {
   try {
     const [{ data: rawProfile }, { data: rawState }] = await Promise.all([
       supabase.from("profiles").select("invite_code").maybeSingle(),

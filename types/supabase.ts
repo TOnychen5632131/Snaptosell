@@ -53,5 +53,24 @@ export interface Database {
         };
       };
     };
+    Functions: {
+      award_credits: {
+        Args: {
+          p_user: string;
+          p_delta: number;
+          p_reason: string;
+          p_session: string;
+        };
+        Returns: null;
+      };
+      get_current_balance: {
+        Args: Record<string, never>;
+        Returns: number[];
+      };
+      claim_invite_reward: {
+        Args: Record<string, never>;
+        Returns: { success: boolean } | null;
+      };
+    };
   };
 }

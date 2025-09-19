@@ -42,8 +42,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "账户信息异常" }, { status: 500 });
       }
 
-      await supabase
-        .from("payments")
+      await (supabase.from("payments") as any)
         .upsert({
           session_id: session.id,
           user_id: userId,
@@ -51,7 +50,7 @@ export async function POST(request: Request) {
           amount_cents: session.amount_total ?? 0,
           credits_awarded: Number(process.env.CREDITS_PER_PURCHASE ?? "10000")
         });
-      await supabase.rpc("award_credits", {
+      await (supabase as any).rpc("award_credits", {
         p_user: userId,
         p_delta: Number(process.env.CREDITS_PER_PURCHASE ?? "10000"),
         p_reason: "stripe_purchase",

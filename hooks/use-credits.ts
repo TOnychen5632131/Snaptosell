@@ -6,24 +6,33 @@ import type { SupabaseBrowserClient } from "@/providers/supabase-provider";
 
 type CreditState = { balance: number; freeuses: number };
 
-const fetchCredits = async (supabase: SupabaseBrowserClient): Promise<CreditState> => {
-  const response = await supabase.rpc("get_current_balance");
-  const { error } = response;
-  const values = (response.data as unknown as number[] | null) ?? null;
-  if (error) {
-    console.warn("Failed to fetch balance", error);
-    return { balance: 0, freeuses: 0 };
+const fetchCredits = async (supabase: SupabaseBrowserClient, userId: string): Promise<CreditState> => {
+  const [{ data: balanceRow, error: balanceError }, { data: referralRow, error: referralError }] = await Promise.all([
+    supabase.from("current_balance").select("balance").eq("user_id", userId).maybeSingle(),
+    supabase.from("referral_state").select("free_uses_remaining").eq("user_id", userId).maybeSingle()
+  ]);
+
+  if (balanceError) {
+    console.warn("Failed to fetch balance", balanceError);
   }
-  if (Array.isArray(values) && values.length === 2) {
-    const [balance, freeuses] = values as [number, number];
-    return { balance, freeuses };
+  if (referralError) {
+    console.warn("Failed to fetch free uses", referralError);
   }
-  return { balance: 0, freeuses: 0 };
+
+  const balance = Number(balanceRow?.balance ?? 0) || 0;
+  const freeuses = Number(referralRow?.free_uses_remaining ?? 0) || 0;
+
+  return { balance, freeuses };
 };
 
 export const useCredits = () => {
   const supabase = useSupabase();
   const { session } = useSessionContext();
-  const { data, mutate } = useSWR(session ? "credits" : null, () => fetchCredits(supabase), { refreshInterval: 60000 });
+  const userId = session?.user?.id;
+  const { data, mutate } = useSWR(
+    userId ? ( ["credits", userId] as const ) : null,
+    ([, id]) => fetchCredits(supabase, id),
+    { refreshInterval: 60000 }
+  );
   return { balance: data?.balance ?? 0, freeUses: data?.freeuses ?? 0, mutate };
 };

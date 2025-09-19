@@ -69,7 +69,7 @@ export async function POST(request: Request) {
   const sessionKey = `job-${jobId}`;
 
   if (costCredits > 0) {
-    const { error: deductionError } = await serviceClient.rpc("award_credits", {
+    const { error: deductionError } = await (serviceClient as any).rpc("award_credits", {
       p_user: user.id,
       p_delta: -costCredits,
       p_reason: `job:${mode}`,
@@ -82,8 +82,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const { data, error } = await serviceClient
-    .from("image_jobs")
+  const { data, error } = await (serviceClient.from("image_jobs") as any)
     .insert({
       id: jobId,
       user_id: user.id,
@@ -99,7 +98,7 @@ export async function POST(request: Request) {
   if (error || !data) {
     console.error("create image job error", error);
     if (costCredits > 0) {
-      await serviceClient.rpc("award_credits", {
+      await (serviceClient as any).rpc("award_credits", {
         p_user: user.id,
         p_delta: costCredits,
         p_reason: "job:refund",

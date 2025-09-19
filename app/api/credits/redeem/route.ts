@@ -47,7 +47,9 @@ export async function POST(request: Request) {
 
   const sessionId = `invite-gift-${user.id}`;
 
-  const { error: awardError } = await serviceClient.rpc("award_credits", {
+  const adminClient = serviceClient as any;
+
+  const { error: awardError } = await adminClient.rpc("award_credits", {
     p_user: user.id,
     p_delta: BONUS_AMOUNT,
     p_reason: "invite_gift_code",

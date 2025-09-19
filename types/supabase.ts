@@ -154,7 +154,14 @@ export interface Database {
         Relationships: [];
       };
     };
-    Views: Record<string, never>;
+    Views: {
+      current_balance: {
+        Row: {
+          user_id: string;
+          balance: number | null;
+        };
+      };
+    };
     Functions: {
       award_credits: {
         Args: {

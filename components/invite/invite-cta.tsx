@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Gift } from "lucide-react";
 import { useReferral } from "@/hooks/use-referral";

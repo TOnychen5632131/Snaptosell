@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Image as ImageIcon, Sparkles } from "lucide-react";
 import { useRef } from "react";

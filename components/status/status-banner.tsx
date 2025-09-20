@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useJobQueue } from "@/hooks/use-job-queue";
 

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useJobQueue } from "@/hooks/use-job-queue";
 

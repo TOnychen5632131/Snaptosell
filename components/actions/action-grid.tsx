@@ -1,5 +1,6 @@
 "use client";
 import { Camera, Download, ImagePlus, Loader2, Package, Share2, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useUpload } from "@/hooks/use-upload";
 import { useJobQueue } from "@/hooks/use-job-queue";
 import { useSupabase } from "@/providers/supabase-provider";

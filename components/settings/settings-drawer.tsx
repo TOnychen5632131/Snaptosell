@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { Dialog } from "@headlessui/react";
 import { settingsStore } from "@/lib/ui-state";
 import { useProfile } from "@/hooks/use-profile";

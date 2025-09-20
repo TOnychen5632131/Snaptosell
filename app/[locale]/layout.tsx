@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SupabaseProvider } from "@/providers/supabase-provider";
 import {NextIntlClientProvider} from 'next-intl';
-import {getMessages, getTranslator} from 'next-intl/server';
+import {getMessages, getTranslations} from 'next-intl/server';
 
 export async function generateMetadata({params: {locale}}: {params: {locale: string}}): Promise<Metadata> {
   const t = await getTranslations({locale, namespace: 'Metadata'});

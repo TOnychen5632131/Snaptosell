@@ -1,5 +1,6 @@
 "use client";
 import { Coins, Gift, LogIn, LogOut, Settings } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useProfile } from "@/hooks/use-profile";
 import { useCredits } from "@/hooks/use-credits";

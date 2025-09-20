@@ -1,3 +1,4 @@
+// version 1.0.0
 import {getRequestConfig} from 'next-intl/server';
 import {notFound} from 'next/navigation';
 

@@ -102,7 +102,7 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
   const imagePart = multiContent.find((part: any) => part?.inline_data?.data);
 
   if (!imagePart?.inline_data?.data) {
-    throw new Error("模型未返回图片数据");
+    throw new Error("Please try again");
   }
 
   const mimeType: string = imagePart.inline_data.mime_type ?? "image/png";

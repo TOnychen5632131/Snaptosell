@@ -39,14 +39,14 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
     set((state) => ({
       currentJob: job,
       recentJobs: [job, ...state.recentJobs.filter((item) => item.id !== job.id)].slice(0, 10),
-      status: { state: "processing", message: "照片已准备，可提交处理" }
+      status: { state: "processing", message: "Photos are ready and can be submitted for processing" }
     }));
   },
   openJob(id) {
     set((state) => {
       const job = state.recentJobs.find((item) => item.id === id);
       if (!job) {
-        return { status: { state: "error", message: "未找到该任务记录" } };
+        return { status: { state: "error", message: "No record found for this task" } };
       }
       return { currentJob: job, status: undefined };
     });
@@ -55,17 +55,17 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
     if (get().isSubmitting) return;
     const job = get().currentJob;
     if (!job) {
-      set({ status: { state: "error", message: "请先选择商品照片" } });
+      set({ status: { state: "error", message: "Please select a product photo first" } });
       return;
     }
 
     if (!job.originalStoragePath && !job.localFile) {
-      set({ status: { state: "error", message: "请先选择商品照片" } });
+      set({ status: { state: "error", message: "Please select a product photo first" } });
       return;
     }
 
     if (job.state === "pending" || job.state === "processing") {
-      set({ status: { state: "processing", message: "已提交任务，请稍候…" } });
+      set({ status: { state: "processing", message: "The task has been submitted, please wait..." } });
       // Prevent duplicate submissions while we wait for realtime updates.
       if (!job.localFile && job.originalStoragePath) {
         return;
@@ -78,7 +78,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       isSubmitting: true,
       status: {
         state: "processing",
-        message: costCredits > 0 ? `扣除 ${costCredits} 积分中，请稍候…` : "上传中，请稍候…"
+        message: costCredits > 0 ? `- ${costCredits} Credit are being accumulated, please wait...` : "Uploading, please wait..."
       }
     });
 
@@ -101,7 +101,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       }
 
       if (!storagePath) {
-        throw new Error("无法确定上传路径");
+        throw new Error("Unable to determine upload path");
       }
 
       const response = await fetch("/api/jobs", {
@@ -125,7 +125,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       }
 
       if (!response.ok || !payload) {
-        const message = typeof payload?.error === "string" ? payload.error : "任务创建失败";
+        const message = typeof payload?.error === "string" ? payload.error : "Task creation failed";
         throw new Error(message);
       }
 
@@ -162,7 +162,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       set((state) => ({
         currentJob: submittedJob,
         recentJobs: [submittedJob, ...state.recentJobs.filter((item) => item.id !== submittedJob.id)].slice(0, 10),
-        status: { state: "processing", message: "任务已提交，处理中…" }
+        status: { state: "processing", message: "The task has been submitted and is being processed..." }
       }));
 
       // 如果接口返回最新积分，触发 useCredits 重新获取
@@ -177,7 +177,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
           currentJob,
           status: {
             state: "error",
-            message: error instanceof Error ? error.message : "提交失败，请稍后再试"
+            message: error instanceof Error ? error.message : "Submission failed, please try again later"
           }
         };
       });
@@ -189,7 +189,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
     const job = get().currentJob;
     if (!job?.processedImageUrl) return;
     navigator.clipboard.writeText(job.processedImageUrl);
-    set({ status: { state: "success", message: "链接已复制，可分享给好友" } });
+    set({ status: { state: "success", message: "The link has been copied and can be shared with friends" } });
   },
   async download() {
     const job = get().currentJob;
@@ -209,16 +209,16 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       anchor.click();
       document.body.removeChild(anchor);
       URL.revokeObjectURL(blobUrl);
-      set({ status: { state: "success", message: "图片已保存，可在下载目录查看" } });
+      set({ status: { state: "success", message: "The image has been saved and can be viewed in the download directory" } });
     } catch (error) {
       console.error(error);
       // iOS Safari download attribute 不可靠，退回到打开新窗口
       if (job.processedImageUrl) {
         window.open(job.processedImageUrl, "_blank", "noopener,noreferrer");
-        set({ status: { state: "success", message: "已在新窗口打开图片，可长按保存" } });
+        set({ status: { state: "success", message: "The image has been opened in a new window. You can long press to save it." } });
         return;
       }
-      set({ status: { state: "error", message: "保存失败，请稍后再试" } });
+      set({ status: { state: "error", message: "Failed to save, please try again later" } });
     }
   }
 }));
@@ -239,9 +239,9 @@ export const JobQueueSubscriber = () => {
             currentJob: state.currentJob?.id === job.id ? job : state.currentJob,
             status:
               job.state === "done"
-                ? { state: "success", message: "修图完成！" }
+                ? { state: "success", message: "DONE" }
                 : job.state === "failed"
-                ? { state: "error", message: job.failure_reason ?? "生成失败" }
+                ? { state: "error", message: job.failure_reason ?? "Build Failure" }
                 : state.status
           }));
         }

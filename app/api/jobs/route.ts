@@ -5,7 +5,7 @@ import { ensureUserProfile, setCurrentBalance } from "@/lib/supabase-admin";
 import { processImageJob } from "@/lib/job-processor";
 import type { Database } from "@/types/supabase";
 
-const INSUFFICIENT_CREDITS_MESSAGE = "积分不足，请先充值或邀请好友获取积分";
+const INSUFFICIENT_CREDITS_MESSAGE = "Insufficient points, please recharge or invite friends to get points";
 
 export async function POST(request: Request) {
   const supabase = supabaseServer();
@@ -15,12 +15,12 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
 
   if (userError || !user) {
-    return NextResponse.json({ error: "未登录" }, { status: 401 });
+    return NextResponse.json({ error: "Not logged in" }, { status: 401 });
   }
 
   const body = await request.json().catch(() => null);
   if (!body) {
-    return NextResponse.json({ error: "请求体无效" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
   const { originalStoragePath, previewUrl, mode = "enhance", costCredits: rawCost } = body as {
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   };
 
   if (typeof originalStoragePath !== "string" || !originalStoragePath) {
-    return NextResponse.json({ error: "缺少有效的图片路径" }, { status: 400 });
+    return NextResponse.json({ error: "Missing valid image path" }, { status: 400 });
   }
 
   const costCredits = Number.isFinite(rawCost) ? Math.max(0, Math.floor(Number(rawCost))) : 0;
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
 
     if (balanceError && balanceError.code !== "PGRST116") {
       console.error("current_balance error", balanceError);
-      return NextResponse.json({ error: "无法获取积分余额" }, { status: 500 });
+      return NextResponse.json({ error: "Unable to obtain points balance" }, { status: 500 });
     }
 
     currentBalance = Number(balanceRow?.balance ?? 0) || 0;
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   const serviceRole = process.env.SUPABASE_SERVICE_ROLE;
 
   if (!serviceUrl || !serviceRole) {
-    return NextResponse.json({ error: "服务未配置" }, { status: 500 });
+    return NextResponse.json({ error: "Service not configured" }, { status: 500 });
   }
 
   const serviceClient = createClient<Database>(serviceUrl, serviceRole, { auth: { persistSession: false } });
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
   const ensureError = await ensureUserProfile(serviceClient, { id: user.id, email: user.email });
   if (ensureError) {
     console.error("ensureUserProfile error", ensureError);
-    return NextResponse.json({ error: "账户信息异常，请稍后再试" }, { status: 500 });
+    return NextResponse.json({ error: "The account information is abnormal, please try again later" }, { status: 500 });
   }
 
   const jobId = crypto.randomUUID();
@@ -90,13 +90,13 @@ export async function POST(request: Request) {
 
     if (deductionError) {
       console.error("award_credits deduction error", deductionError);
-      return NextResponse.json({ error: "扣除积分失败，请稍后再试" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to deduct points, please try again later" }, { status: 500 });
     }
 
     const balanceUpdateError = await setCurrentBalance(serviceClient, user.id, balanceAfterDeduction);
     if (balanceUpdateError) {
       console.error("setCurrentBalance error", balanceUpdateError);
-      return NextResponse.json({ error: "扣除积分失败，请稍后再试" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to deduct points, please try again later" }, { status: 500 });
     }
   }
 
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
       });
       await setCurrentBalance(serviceClient, user.id, currentBalance);
     }
-    return NextResponse.json({ error: "任务创建失败，请稍后再试" }, { status: 500 });
+    return NextResponse.json({ error: "Task creation failed, please try again later" }, { status: 500 });
   }
 
   try {

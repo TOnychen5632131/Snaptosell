@@ -5,7 +5,7 @@ import {NextIntlClientProvider} from 'next-intl';
 import {getMessages, getTranslator} from 'next-intl/server';
 
 export async function generateMetadata({params: {locale}}: {params: {locale: string}}): Promise<Metadata> {
-  const t = await getTranslator(locale, 'Metadata');
+  const t = await getTranslations({locale, namespace: 'Metadata'});
  
   return {
     title: t('title'),

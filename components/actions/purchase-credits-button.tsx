@@ -28,7 +28,7 @@ export const PurchaseCreditsButton = () => {
       className="rounded-full bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:from-blue-600 hover:to-blue-700"
       disabled={loading}
     >
-      {loading ? "处理中…" : "购买积分"}
+      {loading ? "Pending" : "Buy Credit"}
     </button>
   );
 };

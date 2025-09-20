@@ -1,0 +1,76 @@
+{
+  "ActionGrid": {
+    "takePhoto": "Take Photo",
+    "fromAlbum": "From Album",
+    "enhanceQuality": "Enhance Quality",
+    "uploading": "Uploading...",
+    "generateProductPhoto": "Generate Product Photo (-600 credits)",
+    "processing": "Processing...",
+    "share": "Share",
+    "downloadImage": "Download Image"
+  },
+  "Metadata": {
+    "title": "EasyPic Web",
+    "description": "E-commerce Product Image Enhancement"
+  },
+  "HeaderCard": {
+    "defaultUser": "EasyPic User",
+    "welcomeBack": "Welcome back, {displayName}",
+    "notLoggedIn": "Not logged in",
+    "loggedInPrompt": "Credits and free uses are synced across all your devices.",
+    "loggedOutPrompt": "Log in to unlock cloud processing, credit sync, and referral rewards.",
+    "credits": "Credits: {balance}",
+    "freeUses": "Free uses: {freeUses}",
+    "settings": "Settings"
+  },
+  "ImagePanels": {
+    "zoomIn": "Click to zoom",
+    "creditBoostFailed": "Failed to add credits",
+    "creditBoostSuccess": "Credits +1000 (test backdoor)",
+    "originalImageTitle": "Original Image",
+    "originalImageEmpty": "Upload or take a photo of a product",
+    "processedImageTitle": "Processed Result",
+    "processedImageEmpty": "Waiting for generation, the result will appear here"
+  },
+  "StatusBanner": {
+    "processing": "Processing, please wait...",
+    "success": "Processing complete, go check it out!",
+    "error": "Processing failed, please try again later"
+  },
+  "JobHistoryStrip": {
+    "title": "Recent Jobs",
+    "limitNotice": "Showing max 10",
+    "historyAlt": "Job history",
+    "noPreview": "No preview",
+    "statusDone": "Completed",
+    "statusFailed": "Failed",
+    "statusInProgress": "In Progress"
+  },
+  "InviteCTA": {
+    "prompt": "Enter code to claim credits",
+    "promptRequired": "Please enter a code",
+    "redeemFailed": "Redemption failed, please try again later",
+    "redeemSuccess": "Redemption successful, credits +1000",
+    "title": "Invite friends, get 1 free use each",
+    "description": "Share your link. When a friend logs in for the first time, you both get 1 free use. Max 3 times.",
+    "pendingInvite": "Friend invitation found! Click to claim extra free uses.",
+    "copyLink": "Copy Invite Link",
+    "claimReward": "Claim Friend Reward"
+  },
+  "SettingsDrawer": {
+    "unknown": "Unknown",
+    "title": "Settings",
+    "close": "Close",
+    "accountInfo": "Account Information",
+    "loggedInAs": "Logged in as: {email}",
+    "creditsAndUses": "Credits & Uses",
+    "creditBalance": "Credit balance: {balance}",
+    "freeUsesRemaining": "Free uses remaining: {freeUses}",
+    "support": "Support",
+    "contactSupport": "Contact Support",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "logout": "Log Out",
+    "version": "Version 1.0.0"
+  }
+}

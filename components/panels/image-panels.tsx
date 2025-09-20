@@ -11,12 +11,14 @@ const Panel = ({
   icon,
   imageUrl,
   emptyText,
+  zoomText,
   onSecretClick
 }: {
   title: string;
   icon: React.ReactNode;
   imageUrl?: string;
   emptyText: string;
+  zoomText: string;
   onSecretClick?: () => void;
 }) => (
   <div className="rounded-card bg-white p-5 shadow-card">
@@ -41,7 +43,7 @@ const Panel = ({
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
         <span className="absolute bottom-3 right-3 rounded-full bg-black/50 px-3 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100">
-          点击放大
+          {zoomText}
         </span>
       </button>
     ) : (
@@ -54,6 +56,7 @@ const Panel = ({
 );
 
 export const ImagePanels = () => {
+  const t = useTranslations('ImagePanels');
   const { currentJob } = useJobQueue();
   const { mutate } = useCredits();
   const secretState = useRef({ lastTap: 0, count: 0, boosting: false });
@@ -77,16 +80,16 @@ export const ImagePanels = () => {
       const res = await fetch("/api/credits/boost", { method: "POST" });
       const payload = await res.json().catch(() => ({}));
       if (!res.ok || !payload?.success) {
-        throw new Error(payload?.error ?? "积分增加失败");
+        throw new Error(payload?.error ?? t('creditBoostFailed'));
       }
-      useJobQueue.setState({ status: { state: "success", message: "积分 +1000（测试后门）" } });
+      useJobQueue.setState({ status: { state: "success", message: t('creditBoostSuccess') } });
       mutate();
     } catch (error) {
       console.error(error);
       useJobQueue.setState({
         status: {
           state: "error",
-          message: error instanceof Error ? error.message : "积分增加失败"
+          message: error instanceof Error ? error.message : t('creditBoostFailed')
         }
       });
     } finally {
@@ -97,13 +100,20 @@ export const ImagePanels = () => {
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <Panel
-        title="原图"
+        title={t('originalImageTitle')}
         icon={<ImageIcon className="h-4 w-4" />}
         imageUrl={currentJob?.originalPreviewUrl}
-        emptyText="上传或拍摄一张商品照片"
+        emptyText={t('originalImageEmpty')}
+        zoomText={t('zoomIn')}
         onSecretClick={handleSecretTap}
       />
-      <Panel title="修图结果" icon={<Sparkles className="h-4 w-4" />} imageUrl={currentJob?.processedImageUrl} emptyText="等待生成完成，结果会显示在这里" />
+      <Panel 
+        title={t('processedImageTitle')} 
+        icon={<Sparkles className="h-4 w-4" />} 
+        imageUrl={currentJob?.processedImageUrl} 
+        emptyText={t('processedImageEmpty')} 
+        zoomText={t('zoomIn')}
+      />
     </div>
   );
 };

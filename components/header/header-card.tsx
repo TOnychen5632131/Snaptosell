@@ -7,12 +7,13 @@ import { openSettingsDrawer } from "@/lib/ui-state";
 import { PurchaseCreditsButton } from "@/components/actions/purchase-credits-button";
 
 export const HeaderCard = () => {
+  const t = useTranslations('HeaderCard');
   const { profile } = useProfile();
   const { balance, freeUses } = useCredits();
   const { session } = useSessionContext();
 
   const isLoggedIn = Boolean(session);
-  const displayName = profile?.display_name ?? session?.user.email ?? "EasyPic 用户";
+  const displayName = profile?.display_name ?? session?.user.email ?? t('defaultUser');
 
   return (
     <section className="gradient-card rounded-card p-6 shadow-soft">
@@ -23,20 +24,20 @@ export const HeaderCard = () => {
           </div>
           <div className="space-y-2">
             <h2 className="text-lg font-semibold text-slate-800">
-              {isLoggedIn ? `欢迎回来，${displayName}` : "尚未登录"}
+              {isLoggedIn ? t('welcomeBack', { displayName }) : t('notLoggedIn')}
             </h2>
             <p className="text-sm text-slate-500">
-              {isLoggedIn ? "积分与免费次数会在所有设备之间同步。" : "登录后可解锁云端修图、积分同步与邀请奖励。"}
+              {isLoggedIn ? t('loggedInPrompt') : t('loggedOutPrompt')}
             </p>
             {isLoggedIn && (
               <div className="space-y-1 text-sm">
                 <div className="flex items-center gap-2">
                   <Coins className="h-4 w-4 text-orange-500" />
-                  <span className="font-medium text-slate-700">积分 {balance}</span>
+                  <span className="font-medium text-slate-700">{t('credits', { balance })}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Gift className="h-4 w-4 text-rose-500" />
-                  <span className="text-slate-600">免费次数 {freeUses}</span>
+                  <span className="text-slate-600">{t('freeUses', { freeUses })}</span>
                 </div>
               </div>
             )}
@@ -47,7 +48,7 @@ export const HeaderCard = () => {
           <button
             onClick={openSettingsDrawer}
             className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 text-slate-600 shadow-card transition hover:bg-slate-300"
-            aria-label="设置"
+            aria-label={t('settings')}
           >
             <Settings className="h-5 w-5" />
           </button>

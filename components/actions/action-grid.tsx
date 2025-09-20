@@ -6,6 +6,7 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { ChangeEvent } from "react";
 
 export const ActionGrid = () => {
+  const t = useTranslations('ActionGrid');
   const { triggerCamera, triggerLibrary, isPreparing, handleFile } = useUpload();
   const { currentJob, startJob, share, isSubmitting } = useJobQueue();
   const supabase = useSupabase();
@@ -44,11 +45,11 @@ export const ActionGrid = () => {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
         <button className="action-button bg-gradient-to-br from-blue-500 to-blue-600 text-white" onClick={triggerCamera} disabled={isPreparing || isSubmitting}>
           <Camera className="h-6 w-6" />
-          <span>拍摄商品图</span>
+          <span>{t('takePhoto')}</span>
         </button>
         <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={triggerLibrary} disabled={isPreparing || isSubmitting}>
           <ImagePlus className="h-6 w-6 text-brand-primary" />
-          <span>从相册选择</span>
+          <span>{t('fromAlbum')}</span>
         </button>
         <button
           className="action-button bg-gradient-to-br from-emerald-500 to-emerald-600 text-white disabled:from-slate-400 disabled:to-slate-500"
@@ -56,7 +57,7 @@ export const ActionGrid = () => {
           disabled={isSubmitting || (!currentJob?.localFile && !currentJob?.originalStoragePath)}
         >
           {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : <Sparkles className="h-6 w-6" />}
-          <span>{isSubmitting ? "上传中…" : "增强画质"}</span>
+          <span>{isSubmitting ? t('uploading') : t('enhanceQuality')}</span>
         </button>
         <button
           className="action-button bg-gradient-to-br from-purple-500 to-purple-600 text-white disabled:from-slate-400 disabled:to-slate-500"
@@ -64,11 +65,11 @@ export const ActionGrid = () => {
           disabled={isSubmitting || (!currentJob?.localFile && !currentJob?.originalStoragePath)}
         >
           {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : <Package className="h-6 w-6" />}
-          <span>{isSubmitting ? "处理中…" : "生成产品图 (-600积分)"}</span>
+          <span>{isSubmitting ? t('processing') : t('generateProductPhoto')}</span>
         </button>
         <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={share} disabled={!currentJob?.processedImageUrl}>
           <Share2 className="h-6 w-6 text-brand-primary" />
-          <span>分享</span>
+          <span>{t('share')}</span>
         </button>
         <button
           className="action-button bg-white text-slate-700 hover:bg-slate-100"
@@ -76,7 +77,7 @@ export const ActionGrid = () => {
           disabled={!currentJob?.processedImageUrl}
         >
           <Download className="h-6 w-6 text-brand-primary" />
-          <span>下载图片</span>
+          <span>{t('downloadImage')}</span>
         </button>
       </div>
     </>

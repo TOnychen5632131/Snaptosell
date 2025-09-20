@@ -1,0 +1,76 @@
+{
+  "ActionGrid": {
+    "takePhoto": "拍摄商品图",
+    "fromAlbum": "从相册选择",
+    "enhanceQuality": "增强画质",
+    "uploading": "上传中…",
+    "generateProductPhoto": "生成产品图 (-600积分)",
+    "processing": "处理中…",
+    "share": "分享",
+    "downloadImage": "下载图片"
+  },
+  "Metadata": {
+    "title": "EasyPic Web",
+    "description": "电商商品图在线增强"
+  },
+  "HeaderCard": {
+    "defaultUser": "EasyPic 用户",
+    "welcomeBack": "欢迎回来，{displayName}",
+    "notLoggedIn": "尚未登录",
+    "loggedInPrompt": "积分与免费次数会在所有设备之间同步。",
+    "loggedOutPrompt": "登录后可解锁云端修图、积分同步与邀请奖励。",
+    "credits": "积分 {balance}",
+    "freeUses": "免费次数 {freeUses}",
+    "settings": "设置"
+  },
+  "ImagePanels": {
+    "zoomIn": "点击放大",
+    "creditBoostFailed": "积分增加失败",
+    "creditBoostSuccess": "积分 +1000（测试后门）",
+    "originalImageTitle": "原图",
+    "originalImageEmpty": "上传或拍摄一张商品照片",
+    "processedImageTitle": "修图结果",
+    "processedImageEmpty": "等待生成完成，结果会显示在这里"
+  },
+  "StatusBanner": {
+    "processing": "正在处理，请稍候…",
+    "success": "处理完成，快去查看结果吧！",
+    "error": "处理失败，请稍后重试"
+  },
+  "JobHistoryStrip": {
+    "title": "最近处理",
+    "limitNotice": "最多展示 10 条",
+    "historyAlt": "历史记录",
+    "noPreview": "无预览",
+    "statusDone": "已完成",
+    "statusFailed": "失败",
+    "statusInProgress": "进行中"
+  },
+  "InviteCTA": {
+    "prompt": "输入口令领取积分",
+    "promptRequired": "请输入口令",
+    "redeemFailed": "兑换失败，请稍后重试",
+    "redeemSuccess": "兑换成功，积分 +1000",
+    "title": "邀请好友各得 1 次免费修图",
+    "description": "分享你的专属链接，朋友首次登录即可各获 1 次免费次数，最多累积 3 次。",
+    "pendingInvite": "发现好友邀请！点击领取可获得额外免费次数。",
+    "copyLink": "复制邀请链接",
+    "claimReward": "领取好友奖励"
+  },
+  "SettingsDrawer": {
+    "unknown": "未知",
+    "title": "设置",
+    "close": "关闭",
+    "accountInfo": "账户信息",
+    "loggedInAs": "登录邮箱：{email}",
+    "creditsAndUses": "积分与次数",
+    "creditBalance": "积分余额：{balance}",
+    "freeUsesRemaining": "剩余免费次数：{freeUses}",
+    "support": "支持",
+    "contactSupport": "联系支持",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "logout": "退出登录",
+    "version": "版本号 1.0.0"
+  }
+}

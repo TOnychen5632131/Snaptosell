@@ -35,7 +35,7 @@ const copyOriginalImage = async (
 
   if (copyError) {
     const error = copyError as StorageError;
-    throw new Error(`复制图片失败: ${error.message}`);
+    throw new Error(`复制图片失败：${error.message}`);
   }
 
   const { data: publicData } = client.storage.from(BUCKET_NAME).getPublicUrl(processedPath);
@@ -51,7 +51,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer) => Buffer.from(buffer).toStrin
 const downloadOriginalImage = async (client: SupabaseServiceClient, path: string) => {
   const { data, error } = await client.storage.from(BUCKET_NAME).download(path);
   if (error || !data) {
-    throw new Error(`下载图片失败: ${error?.message ?? "unknown"}`);
+    throw new Error(`下载图片失败：${error?.message ?? "unknown"}`);
   }
   const arrayBuffer = await data.arrayBuffer();
   return Buffer.from(arrayBuffer);
@@ -70,7 +70,7 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
         content: [
           {
             type: "text",
-            text: "Generate an e-commerce ready product photo using children crayon style.",
+            text: "你是一名电商产品修图师。请在不改变产品形状、材质与品牌特征的前提下，对输入产品图进行清洁和增强，输出高质感、可上架的主图（需要匹配商品思考背景，可以是配合这个商品的背景，食物就可以是厨房等，珍珠的话就多点海洋元素，美甲就多一些花）。避免添加任何文字、水印、LOGO 或额外道具，不要改变产品颜色/比例/结构。构图留适当留白，满足淘宝/京东/亚马逊主图审美与规范。分辨率清晰、无噪点与摩尔纹。",
           },
           {
             type: "image_url",
@@ -94,7 +94,7 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`AiHubMix 调用失败: ${response.status} ${errorText}`);
+    throw new Error(`AiHubMix 调用失败：${response.status} ${errorText}`);
   }
 
   const json = await response.json();
@@ -124,7 +124,7 @@ const uploadGeneratedImage = async (
     .upload(processedPath, buffer, { upsert: true, contentType: mimeType });
 
   if (uploadError) {
-    throw new Error(`上传生成图片失败: ${uploadError.message}`);
+    throw new Error(`上传生成图片失败：${uploadError.message}`);
   }
 
   const { data: publicData } = client.storage.from(BUCKET_NAME).getPublicUrl(processedPath);

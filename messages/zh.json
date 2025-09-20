@@ -4,13 +4,13 @@
     "fromAlbum": "从相册选择",
     "enhanceQuality": "增强画质",
     "uploading": "上传中…",
-    "generateProductPhoto": "生成产品图 (-600积分)",
+    "generateProductPhoto": "生成产品图 (-600 积分)",
     "processing": "处理中…",
     "share": "分享",
     "downloadImage": "下载图片"
   },
   "Metadata": {
-    "title": "EasyPic Web",
+    "title": "Snaptosell",
     "description": "电商商品图在线增强"
   },
   "HeaderCard": {

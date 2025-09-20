@@ -16,6 +16,27 @@ export const ActionGrid = () => {
     event.target.value = "";
   };
 
+  const download = async () => {
+    if (!currentJob?.processedImageUrl) return;
+
+    try {
+      const response = await fetch(currentJob.processedImageUrl);
+      if (!response.ok) throw new Error("Image download failed.");
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = currentJob.id ? `${currentJob.id}.png` : "image.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+      // You might want to show a user-facing error message here
+    }
+  };
+
   return (
     <>
       <input id="camera-input" type="file" accept="image/*" capture="environment" className="hidden" onChange={onChange} />
@@ -47,7 +68,7 @@ export const ActionGrid = () => {
         </button>
         <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={share} disabled={!currentJob?.processedImageUrl}>
           <Share2 className="h-6 w-6 text-brand-primary" />
-          <span>分享与下载</span>
+          <span>分享</span>
         </button>
         <button
           className="action-button bg-white text-slate-700 hover:bg-slate-100"
@@ -55,7 +76,7 @@ export const ActionGrid = () => {
           disabled={!currentJob?.processedImageUrl}
         >
           <Download className="h-6 w-6 text-brand-primary" />
-          <span>保存到相册</span>
+          <span>下载图片</span>
         </button>
       </div>
     </>

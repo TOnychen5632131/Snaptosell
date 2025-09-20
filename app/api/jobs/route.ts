@@ -144,10 +144,10 @@ export async function POST(request: Request) {
     }
 
     await (serviceClient.from("image_jobs") as any)
-      .update({ state: "failed", failure_reason: processingError instanceof Error ? processingError.message : "生成失败" })
+      .update({ state: "failed", failure_reason: processingError instanceof Error ? processingError.message : "Generation failed" })
       .eq("id", jobId);
 
-    const message = processingError instanceof Error ? processingError.message : "生成失败，请稍后再试";
+    const message = processingError instanceof Error ? processingError.message : "Generation failed, please try again later";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

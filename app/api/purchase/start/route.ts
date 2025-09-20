@@ -8,7 +8,7 @@ const stripe = stripeKey ? new Stripe(stripeKey) : null;
 
 export async function POST() {
   if (!stripe || !priceId) {
-    return NextResponse.json({ error: "支付功能未配置，请稍后再试" }, { status: 400 });
+    return NextResponse.json({ error: "Payment feature not configured, please try again later" }, { status: 400 });
   }
 
   const supabase = supabaseServer();
@@ -16,7 +16,7 @@ export async function POST() {
     data: { user }
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "未登录" }, { status: 401 });
+    return NextResponse.json({ error: "Not logged in" }, { status: 401 });
   }
 
   try {
@@ -37,7 +37,7 @@ export async function POST() {
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error("Stripe checkout error", error);
-    const message = error instanceof Error ? error.message : "未知错误";
-    return NextResponse.json({ error: `创建支付失败：${message}` }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: `Failed to create payment: ${message}` }, { status: 500 });
   }
 }

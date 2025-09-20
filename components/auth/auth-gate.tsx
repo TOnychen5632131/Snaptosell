@@ -14,7 +14,7 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
   if (!mounted) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface-muted">
-        <p className="text-sm text-slate-500">正在加载…</p>
+        <p className="text-sm text-slate-500">Loading…</p>
       </div>
     );
   }
@@ -22,8 +22,8 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
   if (!session) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-surface-muted px-6 text-center">
-        <h1 className="text-2xl font-semibold text-slate-800">登录以继续使用 EasyPic</h1>
-        <p className="max-w-sm text-sm text-slate-500">使用邮箱魔法链接或 Google 一键登录，解锁积分同步、历史记录与云端修图。</p>
+        <h1 className="text-2xl font-semibold text-slate-800">Login to continue using EasyPic</h1>
+        <p className="max-w-sm text-sm text-slate-500">Use email magic link or Google one-click login to unlock credit sync, history, and cloud processing.</p>
         <SignInButton />
       </div>
     );

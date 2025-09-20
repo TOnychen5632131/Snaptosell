@@ -43,7 +43,7 @@ export const useReferral = () => {
   const shareInvite = async () => {
     if (!data?.inviteUrl) return;
     await navigator.clipboard.writeText(data.inviteUrl);
-    alert("邀请链接已复制");
+    alert("Invite link copied");
   };
 
   const claimReward = async () => {

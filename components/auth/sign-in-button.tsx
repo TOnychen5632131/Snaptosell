@@ -15,7 +15,7 @@ export const SignInButton = () => {
   const handleEmail = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email) {
-      setError("请输入邮箱地址");
+      setError("Please enter email address");
       return;
     }
     setStatus("email");
@@ -27,9 +27,9 @@ export const SignInButton = () => {
         options: redirectTo ? { emailRedirectTo: redirectTo } : undefined
       });
       if (requestError) throw requestError;
-      setMessage("验证邮件已发送，请检查邮箱完成登录");
+      setMessage("Verification email sent, please check your email to complete login");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "发送邮件失败，请稍后再试");
+      setError(err instanceof Error ? err.message : "Failed to send email, please try again later");
     } finally {
       setStatus("idle");
     }
@@ -50,17 +50,17 @@ export const SignInButton = () => {
         return;
       }
       setStatus("idle");
-      setError("未收到跳转地址，请稍后再试");
+      setError("No redirect URL received, please try again later");
     } catch (err) {
       setStatus("idle");
-      setError(err instanceof Error ? err.message : "跳转失败，请稍后再试");
+      setError(err instanceof Error ? err.message : "Redirect failed, please try again later");
     }
   };
 
   return (
     <div className="w-full max-w-sm space-y-6 text-left">
       <form onSubmit={handleEmail} className="space-y-3">
-        <label className="block text-sm font-medium text-slate-700">邮箱登录</label>
+        <label className="block text-sm font-medium text-slate-700">Email Login</label>
         <div className="flex items-center gap-3">
           <input
             type="email"
@@ -76,14 +76,14 @@ export const SignInButton = () => {
             disabled={status !== "idle"}
           >
             <Mail className="h-4 w-4" />
-            {status === "email" ? "发送中…" : "发送魔法链接"}
+            {status === "email" ? "Sending…" : "Send Magic Link"}
           </button>
         </div>
       </form>
 
       <div className="relative">
         <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs uppercase tracking-wide text-slate-400">
-          或
+          OR
         </span>
         <div className="border-t border-dashed border-slate-200" />
       </div>
@@ -94,7 +94,7 @@ export const SignInButton = () => {
         disabled={status !== "idle"}
       >
         <LogIn className="h-4 w-4 text-brand-primary" />
-        {status === "google" ? "跳转中…" : "使用 Google 登录"}
+        {status === "google" ? "Redirecting…" : "Login with Google"}
       </button>
 
       {(message || error) && (

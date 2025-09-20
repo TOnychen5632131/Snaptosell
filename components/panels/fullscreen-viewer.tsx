@@ -11,12 +11,12 @@ export const FullScreenViewer = () => {
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="relative mx-auto max-h-full max-w-4xl overflow-hidden rounded-3xl bg-black p-6">
           <button onClick={close} className="absolute right-6 top-6 text-white/70 hover:text-white">
-            关闭
+            Close
           </button>
           {imageUrl && (
             <Image
               src={imageUrl}
-              alt="放大图"
+              alt="Enlarged image"
               width={1600}
               height={1600}
               className="max-h-[75vh] w-full object-contain"

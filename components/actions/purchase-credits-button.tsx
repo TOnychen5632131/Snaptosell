@@ -10,12 +10,12 @@ export const PurchaseCreditsButton = () => {
       const res = await fetch("/api/purchase/start", { method: "POST" });
       const payload = await res.json().catch(() => ({}));
       if (!res.ok || !payload?.url) {
-        throw new Error(payload?.error ?? "无法创建支付订单");
+        throw new Error(payload?.error ?? "Unable to create payment order");
       }
       window.location.href = payload.url;
     } catch (error) {
       console.error(error);
-      const message = error instanceof Error ? error.message : "创建支付失败，请稍后再试";
+      const message = error instanceof Error ? error.message : "Payment creation failed, please try again later";
       alert(message);
     } finally {
       setLoading(false);

@@ -12,7 +12,7 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
 
 export async function POST(request: Request) {
   if (!stripeSecret || !webhookSecret) {
-    return NextResponse.json({ error: "Stripe 未配置" }, { status: 500 });
+    return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
 
   const stripe = new Stripe(stripeSecret);
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
       if (ensureError) {
         console.error("ensureUserProfile error", ensureError);
-        return NextResponse.json({ error: "账户信息异常" }, { status: 500 });
+        return NextResponse.json({ error: "Account information error" }, { status: 500 });
       }
 
       await (supabase.from("payments") as any)
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
 
       if (currentError && currentError.code !== "PGRST116") {
         console.error("current_balance error", currentError);
-        return NextResponse.json({ error: "账户信息异常" }, { status: 500 });
+        return NextResponse.json({ error: "Account information error" }, { status: 500 });
       }
 
       const currentBalance = Number(currentRow?.balance ?? 0) || 0;

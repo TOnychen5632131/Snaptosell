@@ -165,7 +165,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
         status: { state: "processing", message: "The task has been submitted and is being processed..." }
       }));
 
-      // 如果接口返回最新积分，触发 useCredits 重新获取
+      // If the API returns the latest credits, trigger useCredits to refetch
       if (typeof payload?.balance === "number" && typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("credits:updated"));
       }
@@ -197,7 +197,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
 
     try {
       const response = await fetch(job.processedImageUrl, { mode: "cors" });
-      if (!response.ok) throw new Error("下载失败，请稍后再试");
+      if (!response.ok) throw new Error("Download failed, please try again later");
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
@@ -212,7 +212,7 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       set({ status: { state: "success", message: "The image has been saved and can be viewed in the download directory" } });
     } catch (error) {
       console.error(error);
-      // iOS Safari download attribute 不可靠，退回到打开新窗口
+      // iOS Safari download attribute is unreliable, fallback to opening new window
       if (job.processedImageUrl) {
         window.open(job.processedImageUrl, "_blank", "noopener,noreferrer");
         set({ status: { state: "success", message: "The image has been opened in a new window. You can long press to save it." } });

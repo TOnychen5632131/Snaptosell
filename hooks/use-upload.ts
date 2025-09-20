@@ -23,7 +23,7 @@ export const useUpload = () => {
       });
     } catch (error) {
       console.error(error);
-      alert("图片选择失败，请稍后再试");
+      alert("Image selection failed, please try again later");
     } finally {
       setPreparing(false);
     }

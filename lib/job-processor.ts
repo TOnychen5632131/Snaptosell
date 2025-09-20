@@ -20,7 +20,7 @@ const copyOriginalImage = async (
   job: ImageJobRow
 ): Promise<{ path: string; publicUrl: string }> => {
   if (!job.original_storage_path) {
-    throw new Error("缺少原始图片路径");
+    throw new Error("Missing original image path");
   }
 
   const processedPath = job.original_storage_path.startsWith("processed/")
@@ -35,12 +35,12 @@ const copyOriginalImage = async (
 
   if (copyError) {
     const error = copyError as StorageError;
-    throw new Error(`复制图片失败：${error.message}`);
+    throw new Error(`Failed to copy image: ${error.message}`);
   }
 
   const { data: publicData } = client.storage.from(BUCKET_NAME).getPublicUrl(processedPath);
   if (!publicData?.publicUrl) {
-    throw new Error("无法生成图片外链");
+    throw new Error("Unable to generate image public URL");
   }
 
   return { path: processedPath, publicUrl: publicData.publicUrl };
@@ -51,7 +51,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer) => Buffer.from(buffer).toStrin
 const downloadOriginalImage = async (client: SupabaseServiceClient, path: string) => {
   const { data, error } = await client.storage.from(BUCKET_NAME).download(path);
   if (error || !data) {
-    throw new Error(`下载图片失败：${error?.message ?? "unknown"}`);
+    throw new Error(`Failed to download image: ${error?.message ?? "unknown"}`);
   }
   const arrayBuffer = await data.arrayBuffer();
   return Buffer.from(arrayBuffer);
@@ -59,7 +59,7 @@ const downloadOriginalImage = async (client: SupabaseServiceClient, path: string
 
 const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mimeType: string }> => {
   if (!API_KEY) {
-    throw new Error("AIHUBMIX_API_KEY 未配置");
+    throw new Error("AIHUBMIX_API_KEY not configured");
   }
 
   const payload = {
@@ -70,7 +70,7 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
         content: [
           {
             type: "text",
-            text: "你是一名电商产品修图师。请在不改变产品形状、材质与品牌特征的前提下，对输入产品图进行清洁和增强，输出高质感、可上架的主图（需要匹配商品思考背景，可以是配合这个商品的背景，食物就可以是厨房等，珍珠的话就多点海洋元素，美甲就多一些花）。避免添加任何文字、水印、LOGO 或额外道具，不要改变产品颜色/比例/结构。构图留适当留白，满足淘宝/京东/亚马逊主图审美与规范。分辨率清晰、无噪点与摩尔纹。",
+            text: "You are an e-commerce product photo editor. Please clean and enhance the input product image without changing the product shape, material, or brand characteristics, and output high-quality, marketable main images (need to match product context backgrounds, such as kitchen for food, more ocean elements for pearls, more flowers for nail art). Avoid adding any text, watermarks, logos, or additional props, do not change product color/proportion/structure. Composition with appropriate white space to meet Taobao/JD/Amazon main image aesthetics and standards. Clear resolution, no noise or moiré patterns.",
           },
           {
             type: "image_url",
@@ -94,7 +94,7 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`AiHubMix 调用失败：${response.status} ${errorText}`);
+    throw new Error(`AiHubMix API call failed: ${response.status} ${errorText}`);
   }
 
   const json = await response.json();
@@ -124,12 +124,12 @@ const uploadGeneratedImage = async (
     .upload(processedPath, buffer, { upsert: true, contentType: mimeType });
 
   if (uploadError) {
-    throw new Error(`上传生成图片失败：${uploadError.message}`);
+    throw new Error(`Failed to upload generated image: ${uploadError.message}`);
   }
 
   const { data: publicData } = client.storage.from(BUCKET_NAME).getPublicUrl(processedPath);
   if (!publicData?.publicUrl) {
-    throw new Error("无法生成生成图片的外链");
+    throw new Error("Unable to generate public URL for processed image");
   }
 
   return { path: processedPath, publicUrl: publicData.publicUrl };
@@ -140,7 +140,7 @@ export const processImageJob = async (
   job: ImageJobRow
 ): Promise<ImageJobRow> => {
   if (!job.original_storage_path) {
-    throw new Error("缺少原始图片路径");
+    throw new Error("Missing original image path");
   }
 
   let processedPath = "";
@@ -175,7 +175,7 @@ export const processImageJob = async (
     .single();
 
   if (updateError || !updatedJob) {
-    throw new Error(updateError?.message ?? "更新任务记录失败");
+    throw new Error(updateError?.message ?? "Failed to update job record");
   }
 
   return updatedJob as ImageJobRow;

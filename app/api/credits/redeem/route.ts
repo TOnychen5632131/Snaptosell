@@ -13,11 +13,11 @@ export async function POST(request: Request) {
   const submittedCode = payload?.code?.trim() ?? "";
 
   if (!submittedCode) {
-    return NextResponse.json({ error: "请输入口令" }, { status: 400 });
+    return NextResponse.json({ error: "Please enter a code" }, { status: 400 });
   }
 
   if (submittedCode !== SECRET_CODE) {
-    return NextResponse.json({ error: "口令不正确" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid code" }, { status: 400 });
   }
 
   const supabase = createRouteHandlerClient<Database>({ cookies });
@@ -26,14 +26,14 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "未登录" }, { status: 401 });
+    return NextResponse.json({ error: "Not logged in" }, { status: 401 });
   }
 
   const serviceUrl = process.env.SUPABASE_SERVICE_URL;
   const serviceRole = process.env.SUPABASE_SERVICE_ROLE;
 
   if (!serviceUrl || !serviceRole) {
-    return NextResponse.json({ error: "服务未配置" }, { status: 500 });
+    return NextResponse.json({ error: "Service not configured" }, { status: 500 });
   }
 
   const serviceClient = createClient<Database>(serviceUrl, serviceRole, { auth: { persistSession: false } });
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
   if (ensureError) {
     console.error("ensureUserProfile error", ensureError);
-    return NextResponse.json({ error: "账户信息异常，请稍后再试" }, { status: 500 });
+    return NextResponse.json({ error: "Account information error, please try again later" }, { status: 500 });
   }
 
   const { data: currentRow, error: currentError } = await (serviceClient.from("current_balance") as any)
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
   if (currentError && currentError.code !== "PGRST116") {
     console.error("current_balance error", currentError);
-    return NextResponse.json({ error: "无法获取积分余额" }, { status: 500 });
+    return NextResponse.json({ error: "Unable to get credit balance" }, { status: 500 });
   }
 
   const currentBalance = Number(currentRow?.balance ?? 0) || 0;
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
   if (awardError) {
     const duplicate = awardError.code === "23505" || awardError.message?.includes?.("duplicate");
     const status = duplicate ? 400 : 500;
-    const message = duplicate ? "口令已使用" : awardError.message;
+    const message = duplicate ? "Code already used" : awardError.message;
     return NextResponse.json({ error: message }, { status });
   }
 

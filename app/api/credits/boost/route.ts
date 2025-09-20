@@ -14,14 +14,14 @@ export async function POST() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "未登录" }, { status: 401 });
+    return NextResponse.json({ error: "Not logged in" }, { status: 401 });
   }
 
   const serviceUrl = process.env.SUPABASE_SERVICE_URL;
   const serviceRole = process.env.SUPABASE_SERVICE_ROLE;
 
   if (!serviceUrl || !serviceRole) {
-    return NextResponse.json({ error: "服务未配置" }, { status: 500 });
+    return NextResponse.json({ error: "Service not configured" }, { status: 500 });
   }
 
   const serviceClient = createClient<Database>(serviceUrl, serviceRole, {
@@ -32,7 +32,7 @@ export async function POST() {
 
   if (ensureError) {
     console.error("ensureUserProfile error", ensureError);
-    return NextResponse.json({ error: "账户信息异常，请稍后再试" }, { status: 500 });
+    return NextResponse.json({ error: "Account information error, please try again later" }, { status: 500 });
   }
 
   const sessionId = `secret-${user.id}-${Date.now()}`;
@@ -45,7 +45,7 @@ export async function POST() {
 
   if (currentError && currentError.code !== "PGRST116") {
     console.error("current_balance error", currentError);
-    return NextResponse.json({ error: "无法获取积分余额" }, { status: 500 });
+    return NextResponse.json({ error: "Unable to get credit balance" }, { status: 500 });
   }
 
   const currentBalance = Number(currentRow?.balance ?? 0) || 0;

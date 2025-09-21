@@ -7,7 +7,9 @@ const easeOutCubic = (value: number) => 1 - Math.pow(1 - value, 3);
 
 export const ProcessedCounter = () => {
   const t = useTranslations("ProcessedCounter");
-  const { totalProcessed } = useProcessedCount();
+
+  const { totalProcessed, error, isLoading } = useProcessedCount();
+
   const [displayTotal, setDisplayTotal] = useState(0);
   const animationRef = useRef<number>();
   const latestValueRef = useRef(0);
@@ -67,6 +69,9 @@ export const ProcessedCounter = () => {
           </p>
           <h3 className="mt-1 text-2xl font-semibold text-slate-800">{t("title")}</h3>
           <p className="mt-2 max-w-lg text-sm text-slate-500">{t("description")}</p>
+
+          <StatusMessage error={error} isLoading={isLoading} />
+
         </div>
         <div className="relative overflow-hidden rounded-2xl bg-slate-900 px-6 py-4 text-white shadow-inner">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60">
@@ -85,3 +90,34 @@ export const ProcessedCounter = () => {
     </section>
   );
 };
+
+
+type StatusMessageProps = {
+  error?: Error;
+  isLoading: boolean;
+};
+
+const StatusMessage = ({ error, isLoading }: StatusMessageProps) => {
+  const t = useTranslations("ProcessedCounter");
+
+  if (error) {
+    return (
+      <p className="mt-2 flex items-center gap-2 text-sm text-rose-600">
+        <span aria-hidden>⚠️</span>
+        <span>{t("statusError", { message: error.message })}</span>
+      </p>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <p className="mt-2 flex items-center gap-2 text-sm text-slate-500">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-slate-400" aria-hidden />
+        <span>{t("statusLoading")}</span>
+      </p>
+    );
+  }
+
+  return null;
+};
+

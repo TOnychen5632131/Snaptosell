@@ -8,7 +8,12 @@ export async function GET() {
 
   if (!serviceUrl || !serviceRole) {
     console.error("Supabase service credentials are not configured");
-    return NextResponse.json({ totalProcessed: 0 }, { status: 200 });
+
+    return NextResponse.json(
+      { error: "Missing Supabase service credentials", totalProcessed: 0 },
+      { status: 500 }
+    );
+
   }
 
   const serviceClient = createClient<Database>(serviceUrl, serviceRole, { auth: { persistSession: false } });
@@ -21,7 +26,12 @@ export async function GET() {
 
   if (error) {
     console.error("Failed to fetch processed stats", error);
-    return NextResponse.json({ totalProcessed: 0 }, { status: 200 });
+
+    return NextResponse.json(
+      { error: error.message ?? "Failed to fetch processed stats", totalProcessed: 0 },
+      { status: 500 }
+    );
+
   }
 
   const totalProcessed = Number.isFinite(data?.processed_total) ? Number(data?.processed_total) : 0;

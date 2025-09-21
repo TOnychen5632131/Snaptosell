@@ -2,21 +2,41 @@
 import { useEffect } from "react";
 import useSWR from "swr";
 
-type ProcessedCountResponse = { totalProcessed: number };
+
+type ProcessedCountResponse = { totalProcessed: number; error?: string };
 
 const fetchProcessedCount = async (): Promise<ProcessedCountResponse> => {
   const response = await fetch("/api/stats/processed", { method: "GET" });
+  let payload: ProcessedCountResponse | undefined;
 
-  if (!response.ok) {
-    throw new Error("Failed to load processed count");
+  try {
+    payload = (await response.json()) as ProcessedCountResponse;
+  } catch (error) {
+    console.error("Processed count response parsing failed", error);
+    throw new Error("无法解析已处理图片数量的返回结果");
   }
 
-  const data = (await response.json()) as ProcessedCountResponse;
-  return { totalProcessed: Number.isFinite(data.totalProcessed) ? Number(data.totalProcessed) : 0 };
+  if (!response.ok) {
+    const message = payload?.error ?? "Failed to load processed count";
+    throw new Error(message);
+  }
+
+  const totalProcessed = Number.isFinite(payload?.totalProcessed) ? Number(payload?.totalProcessed) : 0;
+  return { totalProcessed };
 };
 
 export const useProcessedCount = () => {
-  const { data, mutate } = useSWR("processed-count", fetchProcessedCount, { refreshInterval: 20000 });
+  const { data, mutate, error, isLoading } = useSWR("processed-count", fetchProcessedCount, {
+    refreshInterval: 20000,
+    shouldRetryOnError: true,
+    onErrorRetry: (_error, _key, _config, revalidate, revalidateOpts) => {
+      if ((revalidateOpts.retryCount ?? 0) >= 5) return;
+      setTimeout(() => {
+        revalidate({ retryCount: (revalidateOpts.retryCount ?? 0) + 1 });
+      }, Math.min(30000, 2000 * ((revalidateOpts.retryCount ?? 0) + 1)));
+    },
+  });
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -27,5 +47,12 @@ export const useProcessedCount = () => {
     };
   }, [mutate]);
 
-  return { totalProcessed: data?.totalProcessed ?? 0, refresh: mutate };
+
+  return {
+    totalProcessed: data?.totalProcessed ?? 0,
+    refresh: mutate,
+    error,
+    isLoading,
+  };
+
 };

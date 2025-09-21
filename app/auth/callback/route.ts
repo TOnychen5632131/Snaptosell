@@ -4,10 +4,12 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import type { Database } from "@/types/supabase";
 
 export async function GET(request: Request) {
+  const cookieStore = cookies();
+  const locale = cookieStore.get("NEXT_LOCALE")?.value ?? "en";
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const errorDescription = requestUrl.searchParams.get("error_description");
-  const redirectTo = requestUrl.searchParams.get("redirect_to") ?? `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`;
+  const redirectTo = requestUrl.searchParams.get("redirect_to") ?? `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/dashboard`;
 
   if (!code) {
     const fallback = errorDescription ?? "auth";

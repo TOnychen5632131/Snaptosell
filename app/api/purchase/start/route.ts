@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { supabaseServer } from "@/lib/supabase-server";
 
 const stripeKey = process.env.STRIPE_SECRET_KEY ?? "";
@@ -20,6 +21,9 @@ export async function POST() {
   }
 
   try {
+    const locale = cookies().get("NEXT_LOCALE")?.value ?? "en";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: user.email ?? undefined,
@@ -30,8 +34,8 @@ export async function POST() {
         }
       ],
       metadata: { user_id: user.id },
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?purchase=success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?purchase=cancel`
+      success_url: `${baseUrl}/${locale}/dashboard?purchase=success`,
+      cancel_url: `${baseUrl}/${locale}/dashboard?purchase=cancel`
     });
 
     return NextResponse.json({ url: session.url });

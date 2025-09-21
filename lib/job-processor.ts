@@ -255,9 +255,9 @@ export async function processImageJob(
   }
 
   // Call without explicit args so the RPC works even if Supabase types are out of date.
-  const { error: incrementError } = await (client.rpc("increment_processed_total") as any);
-  if (incrementError) {
-    console.error("increment_processed_total error", incrementError);
+  const { error: fallbackIncrementError } = await (client.rpc("increment_processed_total") as any);
+  if (fallbackIncrementError) {
+    console.error("increment_processed_total error", fallbackIncrementError);
   }
 
   return updatedJob as ImageJobRow;

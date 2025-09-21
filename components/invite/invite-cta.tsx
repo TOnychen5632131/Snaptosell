@@ -2,14 +2,15 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Gift } from "lucide-react";
-import { useReferral } from "@/hooks/use-referral";
+import { SHARE_APP_LINK, shareAppAndClaimReward } from "@/lib/share-reward";
 import { useCredits } from "@/hooks/use-credits";
 
 export const InviteCTA = () => {
   const t = useTranslations('InviteCTA');
-  const { inviteUrl, pendingInviter, claimReward, shareInvite } = useReferral();
   const { mutate: refreshCredits } = useCredits();
   const [redeeming, setRedeeming] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
 
   const handleGiftClick = async () => {
     if (redeeming) return;
@@ -43,6 +44,23 @@ export const InviteCTA = () => {
     }
   };
 
+  const handleShareClick = async () => {
+    if (sharing) return;
+
+    setSharing(true);
+    try {
+      const result = await shareAppAndClaimReward();
+      if (result.success) {
+        refreshCredits();
+      }
+      setShareMessage(result.maxReached ? t('shareLimit') : t('shareSuccess'));
+    } catch (error) {
+      setShareMessage(error instanceof Error ? error.message : t('shareFailed'));
+    } finally {
+      setSharing(false);
+    }
+  };
+
   return (
     <section className="rounded-card bg-white p-6 shadow-card">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -62,23 +80,18 @@ export const InviteCTA = () => {
             <p className="mt-1 text-sm text-slate-500">
               {t('description')}
             </p>
-            {pendingInviter && (
-              <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-xs text-emerald-600">
-                {t('pendingInvite')}
-              </p>
-            )}
           </div>
         </div>
         <div className="flex flex-col gap-2 md:items-end">
-          <button onClick={shareInvite} className="rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 px-5 py-3 text-sm font-semibold text-white shadow-card">
-            {t('copyLink')}
+          <button
+            onClick={handleShareClick}
+            disabled={sharing}
+            className="rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 px-5 py-3 text-sm font-semibold text-white shadow-card disabled:opacity-70"
+          >
+            {sharing ? t('sharing') : t('shareButton')}
           </button>
-          {pendingInviter && (
-            <button onClick={claimReward} className="text-xs text-emerald-600 hover:text-emerald-700">
-              {t('claimReward')}
-            </button>
-          )}
-          <p className="text-[11px] text-slate-400">{inviteUrl}</p>
+          <p className="text-[11px] text-slate-400">{t('shareHint', { link: SHARE_APP_LINK })}</p>
+          {shareMessage && <p className="text-[11px] text-rose-500">{shareMessage}</p>}
         </div>
       </div>
     </section>

@@ -20,6 +20,15 @@ const config: Config = {
       },
       borderRadius: {
         card: "1.75rem"
+      },
+      keyframes: {
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" }
+        }
+      },
+      animation: {
+        shimmer: "shimmer 4s linear infinite"
       }
     }
   },

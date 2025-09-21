@@ -57,6 +57,66 @@ const downloadOriginalImage = async (client: SupabaseServiceClient, path: string
   return Buffer.from(arrayBuffer);
 };
 
+type AihubmixContentPart = {
+  inline_data?: { data?: string; mime_type?: string };
+  content?: AihubmixContentPart[];
+  image_base64?: string;
+  b64_json?: string;
+  data?: string;
+  mime_type?: string;
+  type?: string;
+};
+
+const flattenParts = (value: unknown): AihubmixContentPart[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  const result: AihubmixContentPart[] = [];
+  const queue: AihubmixContentPart[] = [...(value as AihubmixContentPart[])];
+
+  while (queue.length > 0) {
+    const part = queue.shift();
+    if (!part || typeof part !== "object") {
+      continue;
+    }
+
+    result.push(part);
+
+    if (Array.isArray(part.content)) {
+      queue.push(...part.content);
+    }
+  }
+
+  return result;
+};
+
+const extractImageData = (message: any) => {
+  const candidates: AihubmixContentPart[] = [
+    ...flattenParts(message?.multi_mod_content),
+    ...flattenParts(message?.multi_modal_content),
+    ...flattenParts(message?.content),
+  ];
+
+  for (const part of candidates) {
+    const inlineData = part.inline_data;
+    const base64Data =
+      inlineData?.data ?? part.image_base64 ?? part.b64_json ?? part.data;
+
+    if (typeof base64Data === "string" && base64Data.trim()) {
+      const mimeTypeCandidate = inlineData?.mime_type ?? part.mime_type ?? part.type;
+      const mimeType =
+        typeof mimeTypeCandidate === "string" && mimeTypeCandidate.startsWith("image/")
+          ? mimeTypeCandidate
+          : "image/png";
+
+      return { base64Data, mimeType };
+    }
+  }
+
+  return null;
+};
+
 const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mimeType: string }> => {
   if (!API_KEY) {
     throw new Error("AIHUBMIX_API_KEY not configured");
@@ -65,6 +125,15 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
   const payload = {
     model: PRODUCT_MODEL,
     messages: [
+      {
+        role: "system",
+        content: [
+          {
+            type: "text",
+            text: "You must return exactly one enhanced product image as inline base64 data. Do not include any text or additional responses.",
+          },
+        ],
+      },
       {
         role: "user",
         content: [
@@ -79,8 +148,8 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
         ],
       },
     ],
-    modalities: ["text", "image"],
-    temperature: 0.7,
+    modalities: ["image"],
+    temperature: 0.2,
   };
 
   const response = await fetch(`${API_BASE_URL}/chat/completions`, {
@@ -98,15 +167,14 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
   }
 
   const json = await response.json();
-  const multiContent = json?.choices?.[0]?.message?.multi_mod_content ?? [];
-  const imagePart = multiContent.find((part: any) => part?.inline_data?.data);
+  const imageData = extractImageData(json?.choices?.[0]?.message ?? {});
 
-  if (!imagePart?.inline_data?.data) {
-    throw new Error("Please try again");
+  if (!imageData) {
+    throw new Error("Model did not return image data");
   }
 
-  const mimeType: string = imagePart.inline_data.mime_type ?? "image/png";
-  const buffer = Buffer.from(imagePart.inline_data.data, "base64");
+  const buffer = Buffer.from(imageData.base64Data, "base64");
+  const mimeType: string = imageData.mimeType ?? "image/png";
   return { buffer, mimeType };
 };
 
@@ -135,10 +203,10 @@ const uploadGeneratedImage = async (
   return { path: processedPath, publicUrl: publicData.publicUrl };
 };
 
-export const processImageJob = async (
+export async function processImageJob(
   client: SupabaseServiceClient,
   job: ImageJobRow
-): Promise<ImageJobRow> => {
+): Promise<ImageJobRow> {
   if (!job.original_storage_path) {
     throw new Error("Missing original image path");
   }
@@ -178,5 +246,11 @@ export const processImageJob = async (
     throw new Error(updateError?.message ?? "Failed to update job record");
   }
 
+  // Call without explicit args so the RPC works even if Supabase types are out of date.
+  const { error: incrementError } = await (client.rpc("increment_processed_total") as any);
+  if (incrementError) {
+    console.error("increment_processed_total error", incrementError);
+  }
+
   return updatedJob as ImageJobRow;
-};
+}

@@ -244,6 +244,10 @@ export const JobQueueSubscriber = () => {
                 ? { state: "error", message: job.failure_reason ?? "Build Failure" }
                 : state.status
           }));
+
+          if (typeof window !== "undefined" && job.state === "done") {
+            window.dispatchEvent(new CustomEvent("processed:updated"));
+          }
         }
       )
       .subscribe();

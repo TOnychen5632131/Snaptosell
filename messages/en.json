@@ -72,5 +72,13 @@
     "termsOfService": "Terms of Service",
     "logout": "Log Out",
     "version": "Version 1.0.0"
+  },
+  "ProcessedCounter": {
+    "heading": "community milestone",
+    "title": "Total images processed",
+    "description": "Every photo you enhance helps our models learn and deliver better results for the next seller.",
+    "metricLabel": "images processed",
+    "statusLoading": "Fetching the latest total...",
+    "statusError": "Unable to load stats: {message}"
   }
 }

@@ -8,13 +8,14 @@
 
 body {
   @apply min-h-screen antialiased text-slate-900;
-  background: radial-gradient(120% 120% at 0% 0%, rgba(125, 211, 252, 0.28), transparent 55%),
-    radial-gradient(95% 130% at 100% 0%, rgba(192, 132, 252, 0.24), transparent 60%),
-    linear-gradient(155deg, #0f172a 0%, #111827 38%, #1f2937 72%, #0f172a 100%);
+  background:
+    radial-gradient(120% 120% at 50% -15%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.75) 42%, rgba(240, 249, 255, 0.45) 70%, transparent 100%),
+    radial-gradient(120% 140% at 100% 10%, rgba(221, 214, 254, 0.45), transparent 70%),
+    radial-gradient(140% 160% at 0% 100%, rgba(204, 251, 241, 0.4), transparent 78%);
+  background-color: #f8fafc;
   background-attachment: fixed;
   position: relative;
 }
-
 
 .backdrop-blur-xl {
   -webkit-backdrop-filter: blur(24px);
@@ -25,8 +26,10 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.1), transparent 60%),
-    radial-gradient(circle at 20% 82%, rgba(56, 189, 248, 0.12), transparent 68%);
+  background:
+    radial-gradient(circle at 30% 12%, rgba(255, 255, 255, 0.78), transparent 60%),
+    radial-gradient(circle at 80% 18%, rgba(191, 219, 254, 0.48), transparent 68%),
+    radial-gradient(circle at 15% 88%, rgba(221, 214, 254, 0.38), transparent 70%);
   pointer-events: none;
   z-index: -1;
 }
@@ -35,10 +38,10 @@ body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 80px 80px;
-  mix-blend-mode: soft-light;
-  opacity: 0.4;
+  background-image: radial-gradient(rgba(148, 163, 184, 0.18) 1px, transparent 1px);
+  background-size: 90px 90px;
+  mix-blend-mode: screen;
+  opacity: 0.3;
   pointer-events: none;
   z-index: -1;
 }
@@ -47,11 +50,14 @@ body::after {
   position: relative;
   overflow: hidden;
   border-radius: 1.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08));
-  box-shadow: 0 26px 55px -30px rgba(15, 23, 42, 0.85), 0 1px 0 rgba(255, 255, 255, 0.24) inset;
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.82), rgba(248, 250, 252, 0.58) 38%, rgba(240, 244, 255, 0.28));
+  box-shadow:
+    0 28px 45px -34px rgba(15, 23, 42, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.55) inset,
+    0 15px 35px -28px rgba(148, 163, 184, 0.4) inset;
+  backdrop-filter: blur(30px) saturate(125%);
+  -webkit-backdrop-filter: blur(30px) saturate(125%);
   transition: border-color 240ms ease, box-shadow 240ms ease, transform 240ms ease;
 }
 
@@ -60,22 +66,22 @@ body::after {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0));
-  opacity: 0.85;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.45) 45%, rgba(255, 255, 255, 0));
+  opacity: 0.78;
   pointer-events: none;
 }
 
 .glass-card::after {
   content: "";
   position: absolute;
-  top: -35%;
-  right: -15%;
-  width: 55%;
-  height: 80%;
+  top: -30%;
+  right: -10%;
+  width: 60%;
+  height: 85%;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 60%);
-  filter: blur(20px);
-  opacity: 0.45;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 62%);
+  filter: blur(24px);
+  opacity: 0.48;
   pointer-events: none;
 }
 
@@ -85,8 +91,11 @@ body::after {
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.42);
-  box-shadow: 0 32px 70px -36px rgba(15, 23, 42, 0.9);
+  border-color: rgba(148, 163, 184, 0.5);
+  box-shadow:
+    0 32px 60px -36px rgba(15, 23, 42, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.65) inset,
+    0 16px 36px -28px rgba(148, 163, 184, 0.48) inset;
 }
 
 .action-button {
@@ -100,12 +109,14 @@ body::after {
   padding: 1.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.38);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(241, 245, 249, 0.35));
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 255, 0.6) 55%, rgba(226, 232, 240, 0.38));
   color: #0f172a;
-  box-shadow: 0 22px 50px -28px rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  box-shadow:
+    0 24px 48px -32px rgba(15, 23, 42, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.65) inset;
+  backdrop-filter: blur(26px) saturate(120%);
+  -webkit-backdrop-filter: blur(26px) saturate(120%);
   transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
 
@@ -114,32 +125,39 @@ body::after {
   position: absolute;
   inset: 1px;
   border-radius: inherit;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05));
-  opacity: 0.7;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.15));
+  opacity: 0.72;
   pointer-events: none;
   transition: opacity 200ms ease;
 }
 
 .action-button:hover:not(:disabled) {
   transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 28px 55px -32px rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.55);
+  box-shadow:
+    0 30px 58px -34px rgba(15, 23, 42, 0.48),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset;
 }
 
 .action-button:hover:not(:disabled)::after {
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .action-button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.25), 0 28px 55px -32px rgba(15, 23, 42, 0.9);
+  box-shadow:
+    0 0 0 3px rgba(148, 163, 184, 0.22),
+    0 28px 55px -32px rgba(15, 23, 42, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.68) inset;
 }
 
 .action-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
   transform: none;
-  box-shadow: 0 12px 32px -28px rgba(15, 23, 42, 0.55);
+  box-shadow:
+    0 16px 40px -30px rgba(15, 23, 42, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.5) inset;
 }
 
 .action-button > * {

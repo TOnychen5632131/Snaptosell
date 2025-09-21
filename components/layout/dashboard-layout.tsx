@@ -4,8 +4,8 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(56,189,248,0.18),transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(165,180,252,0.18),transparent_60%),linear-gradient(160deg,rgba(15,23,42,0.92)_0%,rgba(15,23,42,0.6)_45%,rgba(30,41,59,0.82)_100%)]" />
-        <div className="absolute inset-0 bg-white/6 mix-blend-soft-light" />
+        <div className="absolute inset-0 bg-[radial-gradient(130%_130%_at_50%_-15%,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.75)_45%,rgba(226,232,240,0.25)_80%,transparent_100%),radial-gradient(140%_140%_at_100%_10%,rgba(221,214,254,0.45),transparent_75%),radial-gradient(140%_140%_at_0%_100%,rgba(191,219,254,0.42),transparent_78%)]" />
+        <div className="absolute inset-0 bg-white/60 mix-blend-screen" />
       </div>
       <div className="mx-auto w-full max-w-6xl pb-24 pt-safe-top">{children}</div>
     </div>

@@ -61,18 +61,18 @@ export const SignInButton = () => {
     <div className="w-full max-w-sm space-y-6 text-left text-slate-800">
       <form onSubmit={handleEmail} className="space-y-3">
         <label className="block text-sm font-medium tracking-wide text-slate-600">Email Login</label>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="flex-1 rounded-full border border-white/60 bg-white/60 px-5 py-3 text-sm text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-xl placeholder:text-slate-500 focus:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-200/60"
-            placeholder="you@example.com"
+            className="w-full flex-1 rounded-full border border-white/60 bg-white/70 px-5 py-3 text-sm text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-xl placeholder:text-slate-500 focus:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-200/60"
+            placeholder="填写你的邮箱"
             required
           />
           <button
             type="submit"
-            className="flex items-center gap-2 rounded-full border border-white/60 bg-gradient-to-r from-sky-500/80 to-sky-400/70 px-5 py-3 text-sm font-semibold text-white shadow-[0_20px_40px_-28px_rgba(37,99,235,0.85)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-26px_rgba(37,99,235,0.9)] disabled:cursor-not-allowed disabled:opacity-70"
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-sky-300/60 bg-gradient-to-r from-sky-500 to-cyan-400 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_38px_-26px_rgba(14,165,233,0.85)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_44px_-24px_rgba(14,165,233,0.9)] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
             disabled={status !== "idle"}
           >
             <Mail className="h-4 w-4" />

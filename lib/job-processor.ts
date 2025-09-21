@@ -203,10 +203,10 @@ const uploadGeneratedImage = async (
   return { path: processedPath, publicUrl: publicData.publicUrl };
 };
 
-export const processImageJob = async (
+export async function processImageJob(
   client: SupabaseServiceClient,
   job: ImageJobRow
-): Promise<ImageJobRow> => {
+): Promise<ImageJobRow> {
   if (!job.original_storage_path) {
     throw new Error("Missing original image path");
   }
@@ -257,5 +257,11 @@ export const processImageJob = async (
     console.error("increment_processed_total error", incrementError);
   }
 
+  // Call without explicit args so the RPC works even if Supabase types are out of date.
+  const { error: incrementError } = await (client.rpc("increment_processed_total") as any);
+  if (incrementError) {
+    console.error("increment_processed_total error", incrementError);
+  }
+
   return updatedJob as ImageJobRow;
-};
+}

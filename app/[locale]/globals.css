@@ -15,9 +15,11 @@ body {
   position: relative;
 }
 
+
 .backdrop-blur-xl {
   -webkit-backdrop-filter: blur(24px);
 }
+
 
 body::before {
   content: "";
@@ -171,6 +173,7 @@ body::after {
   border-color: rgba(252, 165, 165, 0.55);
   background: linear-gradient(140deg, rgba(244, 63, 94, 0.78), rgba(251, 113, 133, 0.6));
   box-shadow: 0 28px 60px -32px rgba(244, 63, 94, 0.85);
+
 }
 
 .toolbar {
@@ -218,4 +221,5 @@ body::after {
   .action-button {
     -apple-visual-effect: -apple-system-glass-material;
   }
+
 }

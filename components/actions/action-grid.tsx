@@ -43,6 +43,7 @@ export const ActionGrid = () => {
     <>
       <input id="camera-input" type="file" accept="image/*" capture="environment" className="hidden" onChange={onChange} />
       <input id="library-input" type="file" accept="image/*" className="hidden" onChange={onChange} />
+
       <section className="toolbar">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
           <button
@@ -93,6 +94,7 @@ export const ActionGrid = () => {
           </button>
         </div>
       </section>
+
     </>
   );
 };

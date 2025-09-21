@@ -67,7 +67,7 @@ export const SignInButton = () => {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             className="w-full flex-1 rounded-full border border-white/60 bg-white/70 px-5 py-3 text-sm text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-xl placeholder:text-slate-500 focus:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-200/60"
-            placeholder="填写你的邮箱"
+            placeholder="Email Here"
             required
           />
           <button

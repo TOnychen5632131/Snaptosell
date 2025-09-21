@@ -13,18 +13,34 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
 
   if (!mounted) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-surface-muted">
-        <p className="text-sm text-slate-500">Loading…</p>
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-[radial-gradient(140%_140%_at_15%_5%,rgba(191,219,254,0.32),transparent_58%),radial-gradient(120%_140%_at_85%_0%,rgba(221,214,254,0.28),transparent_60%),linear-gradient(165deg,rgba(248,250,252,0.95)_0%,rgba(255,255,255,0.92)_48%,rgba(238,242,255,0.94)_100%)]" />
+          <div className="absolute inset-0 bg-white/35 mix-blend-soft-light" />
+        </div>
+        <div className="glass-card px-8 py-5 text-center text-slate-800">
+          <p className="text-sm font-medium">Loading…</p>
+        </div>
       </div>
     );
   }
 
   if (!session) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-surface-muted px-6 text-center">
-        <h1 className="text-2xl font-semibold text-slate-800">Login to continue using EasyPic</h1>
-        <p className="max-w-sm text-sm text-slate-500">Use email magic link or Google one-click login to unlock credit sync, history, and cloud processing.</p>
-        <SignInButton />
+      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-16 text-center">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-[radial-gradient(150%_150%_at_8%_0%,rgba(191,219,254,0.32),transparent_58%),radial-gradient(130%_140%_at_92%_5%,rgba(221,214,254,0.3),transparent_65%),radial-gradient(160%_140%_at_20%_95%,rgba(254,215,226,0.25),transparent_72%),linear-gradient(165deg,rgba(248,250,252,0.96)_0%,rgba(255,255,255,0.92)_48%,rgba(238,242,255,0.94)_100%)]" />
+          <div className="absolute inset-0 bg-white/35 mix-blend-soft-light" />
+        </div>
+        <div className="glass-card w-full max-w-xl px-10 py-12 text-center text-slate-800">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-800">Login to continue using EasyPic</h1>
+          <p className="mx-auto mt-3 max-w-md text-sm text-slate-600">
+            Use email magic link or Google one-click login to unlock credit sync, history, and cloud processing.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <SignInButton />
+          </div>
+        </div>
       </div>
     );
   }

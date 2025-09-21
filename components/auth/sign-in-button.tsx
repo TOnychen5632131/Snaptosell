@@ -58,21 +58,21 @@ export const SignInButton = () => {
   };
 
   return (
-    <div className="w-full max-w-sm space-y-6 text-left">
+    <div className="w-full max-w-sm space-y-6 text-left text-slate-800">
       <form onSubmit={handleEmail} className="space-y-3">
-        <label className="block text-sm font-medium text-slate-700">Email Login</label>
+        <label className="block text-sm font-medium tracking-wide text-slate-600">Email Login</label>
         <div className="flex items-center gap-3">
           <input
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="flex-1 rounded-full border border-slate-200 px-4 py-3 text-sm shadow-inner focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
+            className="flex-1 rounded-full border border-white/70 bg-white/70 px-5 py-3 text-sm text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl placeholder:text-slate-500 focus:border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-100/80"
             placeholder="you@example.com"
             required
           />
           <button
             type="submit"
-            className="flex items-center gap-2 rounded-full bg-brand-primary px-4 py-2 text-sm font-medium text-white shadow-card transition hover:bg-brand-accent disabled:bg-slate-400"
+            className="flex items-center gap-2 rounded-full border border-white/80 bg-gradient-to-r from-sky-100/80 via-sky-200/70 to-sky-300/70 px-5 py-3 text-sm font-semibold text-slate-800 shadow-[0_24px_50px_-32px_rgba(125,211,252,0.65)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_28px_60px_-30px_rgba(125,211,252,0.7)] disabled:cursor-not-allowed disabled:opacity-70"
             disabled={status !== "idle"}
           >
             <Mail className="h-4 w-4" />
@@ -82,15 +82,15 @@ export const SignInButton = () => {
       </form>
 
       <div className="relative">
-        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs uppercase tracking-wide text-slate-400">
+        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs uppercase tracking-[0.35em] text-slate-500">
           OR
         </span>
-        <div className="border-t border-dashed border-slate-200" />
+        <div className="border-t border-dashed border-white/40" />
       </div>
 
       <button
         onClick={handleGoogle}
-        className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-card transition hover:bg-slate-50 disabled:bg-slate-100"
+        className="flex w-full items-center justify-center gap-2 rounded-full border border-white/80 bg-white/75 px-5 py-3 text-sm font-semibold text-slate-700 shadow-[0_24px_50px_-32px_rgba(15,23,42,0.28)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/85 disabled:cursor-not-allowed disabled:opacity-70"
         disabled={status !== "idle"}
       >
         <LogIn className="h-4 w-4 text-brand-primary" />

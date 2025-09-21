@@ -11,15 +11,29 @@ export const StatusBanner = () => {
   const state = status.state;
   const message = status.message;
 
+  const baseClasses =
+    "relative flex items-center gap-3 overflow-hidden rounded-2xl border px-5 py-4 text-sm backdrop-blur-xl shadow-[0_24px_52px_-32px_rgba(15,23,42,0.28)]";
   const config =
     state === "processing"
-      ? { icon: <Loader2 className="h-5 w-5 animate-spin" />, classes: "border-blue-200 bg-blue-50 text-blue-600", text: message ?? t('processing') }
+      ? {
+          icon: <Loader2 className="h-5 w-5 animate-spin" />,
+          classes: `${baseClasses} border-sky-200/70 bg-sky-100/65 text-slate-800`,
+          text: message ?? t('processing')
+        }
       : state === "success"
-      ? { icon: <CheckCircle2 className="h-5 w-5" />, classes: "border-emerald-200 bg-emerald-50 text-emerald-600", text: message ?? t('success') }
-      : { icon: <AlertCircle className="h-5 w-5" />, classes: "border-rose-200 bg-rose-50 text-rose-600", text: message ?? t('error') };
+      ? {
+          icon: <CheckCircle2 className="h-5 w-5" />,
+          classes: `${baseClasses} border-emerald-200/70 bg-emerald-100/65 text-slate-800`,
+          text: message ?? t('success')
+        }
+      : {
+          icon: <AlertCircle className="h-5 w-5" />,
+          classes: `${baseClasses} border-rose-200/75 bg-rose-100/65 text-slate-800`,
+          text: message ?? t('error')
+        };
 
   return (
-    <div className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm shadow-card ${config.classes}`}>
+    <div className={config.classes}>
       {config.icon}
       <span>{config.text}</span>
     </div>

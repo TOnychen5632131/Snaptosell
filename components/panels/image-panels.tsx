@@ -22,9 +22,9 @@ const Panel = ({
   zoomText: string;
   onSecretClick?: () => void;
 }) => (
-  <div className="rounded-card bg-white p-5 shadow-card">
+  <div className="glass-card p-5 text-slate-900">
     <div className="mb-4 flex items-center gap-2">
-      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-primary/10 text-brand-primary">{icon}</div>
+      <div className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/75 bg-white/75 text-brand-primary shadow-[0_16px_34px_-24px_rgba(59,130,246,0.35)]">{icon}</div>
       <h3 className="text-sm font-semibold text-slate-700">{title}</h3>
     </div>
     {imageUrl ? (
@@ -33,7 +33,7 @@ const Panel = ({
           onSecretClick?.();
           openViewer(imageUrl);
         }}
-        className="group relative block overflow-hidden rounded-2xl bg-slate-100 transition hover:shadow-soft"
+        className="group relative block overflow-hidden rounded-2xl border border-white/75 bg-white/70 shadow-[0_24px_55px_-34px_rgba(15,23,42,0.26)] backdrop-blur-xl transition hover:-translate-y-1 hover:border-white/85 hover:bg-white/80 hover:shadow-[0_30px_65px_-36px_rgba(15,23,42,0.3)]"
       >
         <Image
           src={imageUrl}
@@ -43,14 +43,14 @@ const Panel = ({
           className="mx-auto block h-full w-full rounded-2xl object-contain"
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
-        <span className="absolute bottom-3 right-3 rounded-full bg-black/50 px-3 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100">
+        <span className="absolute bottom-3 right-3 rounded-full border border-white/70 bg-white/70 px-3 py-1 text-xs text-slate-700 backdrop-blur-xl opacity-0 transition group-hover:opacity-100">
           {zoomText}
         </span>
       </button>
     ) : (
-      <div className="flex h-56 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-slate-400">
-        <ImageIcon className="h-10 w-10" />
-        <p className="text-sm">{emptyText}</p>
+      <div className="flex h-56 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/75 bg-white/70 text-slate-500 backdrop-blur-xl">
+        <ImageIcon className="h-10 w-10 text-brand-primary/70" />
+        <p className="text-sm text-slate-600">{emptyText}</p>
       </div>
     )}
   </div>

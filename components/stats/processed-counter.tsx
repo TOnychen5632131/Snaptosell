@@ -61,7 +61,7 @@ export const ProcessedCounter = () => {
   );
 
   return (
-    <section className="rounded-card bg-white/90 p-6 shadow-soft">
+    <section className="glass-card p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium uppercase tracking-wide text-brand-primary">
@@ -73,15 +73,16 @@ export const ProcessedCounter = () => {
           <StatusMessage error={error} isLoading={isLoading} />
 
         </div>
-        <div className="relative overflow-hidden rounded-2xl bg-slate-900 px-6 py-4 text-white shadow-inner">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60">
-            <div className="h-full w-full -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-white/80 bg-gradient-to-br from-white/85 via-sky-100/65 to-slate-50/70 px-6 py-5 text-slate-800 shadow-[0_28px_60px_-34px_rgba(15,23,42,0.26)] backdrop-blur-xl">
+          <div className="pointer-events-none absolute inset-0 opacity-80">
+            <div className="absolute -inset-x-16 top-0 h-full bg-[conic-gradient(from_90deg_at_50%_50%,rgba(148,163,184,0.08)_0deg,rgba(255,255,255,0)_120deg,rgba(125,211,252,0.18)_240deg,rgba(255,255,255,0)_360deg)]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent" />
           </div>
           <div className="relative z-10 flex flex-col items-end text-right">
-            <span className="text-xs font-medium uppercase tracking-[0.3em] text-white/60">
+            <span className="text-xs font-medium uppercase tracking-[0.3em] text-slate-500">
               {t("metricLabel")}
             </span>
-            <span className="mt-1 font-mono text-4xl font-bold leading-none tabular-nums">
+            <span className="mt-1 font-mono text-4xl font-bold leading-none tabular-nums text-slate-800 drop-shadow-[0_6px_16px_rgba(148,163,184,0.35)]">
               {formattedTotal}
             </span>
           </div>

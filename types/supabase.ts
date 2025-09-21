@@ -78,6 +78,24 @@ export interface Database {
         };
         Relationships: [];
       };
+      image_processing_stats: {
+        Row: {
+          id: string;
+          processed_total: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          id: string;
+          processed_total?: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          processed_total?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
       credit_ledger: {
         Row: {
           id: number;
@@ -179,6 +197,12 @@ export interface Database {
       claim_invite_reward: {
         Args: Record<string, never>;
         Returns: { success: boolean } | null;
+      };
+      increment_processed_total: {
+        Args: {
+          step?: number | null;
+        };
+        Returns: undefined;
       };
     };
     Enums: Record<string, never>;

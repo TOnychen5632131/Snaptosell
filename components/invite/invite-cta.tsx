@@ -62,14 +62,14 @@ export const InviteCTA = () => {
   };
 
   return (
-    <section className="rounded-card bg-white p-6 shadow-card">
+    <section className="glass-card p-6 text-slate-900">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-start gap-3">
           <button
             type="button"
             onClick={handleGiftClick}
             disabled={redeeming}
-            className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 text-rose-500 transition hover:bg-rose-200 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl border border-white/60 bg-white/50 text-rose-500 shadow-[0_16px_32px_-24px_rgba(244,63,94,0.65)] transition hover:-translate-y-0.5 hover:bg-white/70 disabled:cursor-not-allowed disabled:opacity-60"
             title={t('prompt')}
             aria-label={t('prompt')}
           >
@@ -86,11 +86,11 @@ export const InviteCTA = () => {
           <button
             onClick={handleShareClick}
             disabled={sharing}
-            className="rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 px-5 py-3 text-sm font-semibold text-white shadow-card disabled:opacity-70"
+            className="relative flex items-center justify-center gap-2 rounded-2xl border border-white/60 bg-gradient-to-r from-rose-500/80 to-rose-500/60 px-5 py-3 text-sm font-semibold text-white shadow-[0_26px_55px_-32px_rgba(244,63,94,0.9)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_32px_65px_-30px_rgba(244,63,94,0.95)] disabled:cursor-not-allowed disabled:opacity-70"
           >
             {sharing ? t('sharing') : t('shareButton')}
           </button>
-          <p className="text-[11px] text-slate-400">{t('shareHint', { link: SHARE_APP_LINK })}</p>
+          <p className="text-[11px] text-slate-500">{t('shareHint', { link: SHARE_APP_LINK })}</p>
           {shareMessage && <p className="text-[11px] text-rose-500">{shareMessage}</p>}
         </div>
       </div>

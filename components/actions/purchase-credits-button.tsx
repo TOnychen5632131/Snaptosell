@@ -25,7 +25,7 @@ export const PurchaseCreditsButton = () => {
   return (
     <button
       onClick={handlePurchase}
-      className="rounded-full bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:from-blue-600 hover:to-blue-700"
+      className="relative flex items-center justify-center gap-2 rounded-full border border-white/60 bg-gradient-to-r from-sky-500/85 to-indigo-500/70 px-5 py-3 text-sm font-semibold text-white shadow-[0_26px_55px_-32px_rgba(37,99,235,0.9)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_32px_62px_-30px_rgba(37,99,235,0.95)] disabled:cursor-not-allowed disabled:opacity-70"
       disabled={loading}
     >
       {loading ? "Pending" : "Buy Credit"}

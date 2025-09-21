@@ -17,11 +17,15 @@ export const HeaderCard = () => {
   const displayName = profile?.display_name ?? session?.user.email ?? t('defaultUser');
 
   return (
-    <section className="gradient-card rounded-card p-6 shadow-soft">
+    <section className="glass-card p-6 text-slate-900">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-primary/10">
-            {isLoggedIn ? <LogIn className="h-6 w-6 text-brand-primary" /> : <LogOut className="h-6 w-6 text-slate-500" />}
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/60 bg-white/60 text-brand-primary shadow-[0_18px_30px_-22px_rgba(37,99,235,0.7)]">
+            {isLoggedIn ? (
+              <LogIn className="h-6 w-6" />
+            ) : (
+              <LogOut className="h-6 w-6 text-slate-500" />
+            )}
           </div>
           <div className="space-y-2">
             <h2 className="text-lg font-semibold text-slate-800">
@@ -48,10 +52,10 @@ export const HeaderCard = () => {
           {isLoggedIn && <PurchaseCreditsButton />}
           <button
             onClick={openSettingsDrawer}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 text-slate-600 shadow-card transition hover:bg-slate-300"
+            className="group relative flex h-12 w-12 items-center justify-center rounded-2xl border border-white/50 bg-white/40 text-slate-600 transition hover:-translate-y-0.5 hover:bg-white/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
             aria-label={t('settings')}
           >
-            <Settings className="h-5 w-5" />
+            <Settings className="h-5 w-5 transition group-hover:rotate-12" />
           </button>
         </div>
       </div>

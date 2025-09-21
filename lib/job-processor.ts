@@ -246,6 +246,7 @@ export const processImageJob = async (
     throw new Error(updateError?.message ?? "Failed to update job record");
   }
 
+  // Call without explicit args so the RPC works even if Supabase types are out of date.
   const { error: incrementError } = await (client.rpc("increment_processed_total") as any);
   if (incrementError) {
     console.error("increment_processed_total error", incrementError);

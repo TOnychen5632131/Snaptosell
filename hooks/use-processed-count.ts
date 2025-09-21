@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import useSWR from "swr";
 
+
 type ProcessedCountResponse = { totalProcessed: number; error?: string };
 
 const fetchProcessedCount = async (): Promise<ProcessedCountResponse> => {
@@ -36,6 +37,7 @@ export const useProcessedCount = () => {
     },
   });
 
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const handler = () => mutate();
@@ -45,10 +47,12 @@ export const useProcessedCount = () => {
     };
   }, [mutate]);
 
+
   return {
     totalProcessed: data?.totalProcessed ?? 0,
     refresh: mutate,
     error,
     isLoading,
   };
+
 };

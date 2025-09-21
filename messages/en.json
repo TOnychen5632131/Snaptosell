@@ -51,11 +51,14 @@
     "promptRequired": "Please enter a code",
     "redeemFailed": "Redemption failed, please try again later",
     "redeemSuccess": "Redemption successful, credits +1000",
-    "title": "Invite friends, get 1 free use each",
-    "description": "Share your link. When a friend logs in for the first time, you both get 1 free use. Max 3 times.",
-    "pendingInvite": "Friend invitation found! Click to claim extra free uses.",
-    "copyLink": "Copy Invite Link",
-    "claimReward": "Claim Friend Reward"
+    "title": "Share to unlock free retouches",
+    "description": "Click the button to share Snaptosell and instantly receive one free use. Each account can claim the sharing reward up to 3 times.",
+    "shareButton": "Share now",
+    "sharing": "Sharing…",
+    "shareSuccess": "Shared! +1 free use has been added to your account.",
+    "shareLimit": "You can only claim the sharing reward up to 3 times.",
+    "shareFailed": "Share failed, please try again later.",
+    "shareHint": "Share link: {link}"
   },
   "SettingsDrawer": {
     "unknown": "Unknown",
@@ -77,8 +80,10 @@
     "heading": "community milestone",
     "title": "Total images processed",
     "description": "Every photo you enhance helps our models learn and deliver better results for the next seller.",
+
     "metricLabel": "images processed",
     "statusLoading": "Fetching the latest total...",
     "statusError": "Unable to load stats: {message}"
+
   }
 }

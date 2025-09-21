@@ -51,11 +51,14 @@
     "promptRequired": "请输入口令",
     "redeemFailed": "兑换失败，请稍后重试",
     "redeemSuccess": "兑换成功，积分 +1000",
-    "title": "邀请好友各得 1 次免费修图",
-    "description": "分享你的专属链接，朋友首次登录即可各获 1 次免费次数，最多累积 3 次。",
-    "pendingInvite": "发现好友邀请！点击领取可获得额外免费次数。",
-    "copyLink": "复制邀请链接",
-    "claimReward": "领取好友奖励"
+    "title": "分享即可领取免费次数",
+    "description": "点击按钮分享 Snaptosell，即刻获得 1 次免费使用机会。每个账号最多可领取 3 次分享奖励。",
+    "shareButton": "立即分享",
+    "sharing": "分享中…",
+    "shareSuccess": "分享成功！免费次数 +1",
+    "shareLimit": "免费积分最多领取 3 次",
+    "shareFailed": "分享失败，请稍后重试",
+    "shareHint": "分享链接：{link}"
   },
   "SettingsDrawer": {
     "unknown": "未知",
@@ -77,8 +80,10 @@
     "heading": "社区里程碑",
     "title": "累计处理的图片",
     "description": "每一次修图都在帮助模型学习，让下一位卖家获得更好的效果。",
+
     "metricLabel": "已处理图片",
     "statusLoading": "正在同步最新数据…",
     "statusError": "统计数据加载失败：{message}"
+
   }
 }

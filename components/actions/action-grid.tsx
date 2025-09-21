@@ -68,7 +68,13 @@ export const ActionGrid = () => {
           {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : <Package className="h-6 w-6" />}
           <span>{isSubmitting ? t('processing') : t('generateProductPhoto')}</span>
         </button>
-        <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={share} disabled={!currentJob?.processedImageUrl}>
+        <button
+          className="action-button bg-white text-slate-700 hover:bg-slate-100"
+          onClick={() => {
+            void share();
+          }}
+          disabled={isSubmitting}
+        >
           <Share2 className="h-6 w-6 text-brand-primary" />
           <span>{t('share')}</span>
         </button>

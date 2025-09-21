@@ -27,7 +27,7 @@ type JobQueueState = {
   setJob: (job: JobItem) => void;
   openJob: (id: string) => void;
   startJob: (mode: string, supabase: SupabaseBrowserClient, options?: { costCredits?: number }) => Promise<void>;
-  share: () => void;
+  share: () => Promise<void>;
   download: () => void;
   isSubmitting: boolean;
 };
@@ -185,11 +185,29 @@ export const useJobQueue = create<JobQueueState>((set, get) => ({
       set({ isSubmitting: false });
     }
   },
-  share() {
-    const job = get().currentJob;
-    if (!job?.processedImageUrl) return;
-    navigator.clipboard.writeText(job.processedImageUrl);
-    set({ status: { state: "success", message: "The link has been copied and can be shared with friends" } });
+  async share() {
+    try {
+      const { shareAppAndClaimReward } = await import("@/lib/share-reward");
+      const result = await shareAppAndClaimReward();
+
+      if (typeof window !== "undefined" && result.success) {
+        window.dispatchEvent(new CustomEvent("credits:updated"));
+      }
+
+      set({
+        status: {
+          state: "success",
+          message: result.maxReached ? "免费积分最多领取3次" : "分享成功！免费次数 +1"
+        }
+      });
+    } catch (error) {
+      set({
+        status: {
+          state: "error",
+          message: error instanceof Error ? error.message : "分享失败，请稍后重试"
+        }
+      });
+    }
   },
   async download() {
     const job = get().currentJob;

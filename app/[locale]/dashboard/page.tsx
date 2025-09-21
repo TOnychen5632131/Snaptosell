@@ -10,6 +10,7 @@ import { SettingsDrawer } from "@/components/settings/settings-drawer";
 import { FullScreenViewer } from "@/components/panels/fullscreen-viewer";
 import { DebugConsole } from "@/components/debug/debug-console";
 import { JobQueueSubscriber } from "@/hooks/use-job-queue";
+import { ProcessedCounter } from "@/components/stats/processed-counter";
 
 export default function DashboardPage() {
   return (
@@ -18,6 +19,7 @@ export default function DashboardPage() {
         <JobQueueSubscriber />
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 pb-20 pt-8">
           <HeaderCard />
+          <ProcessedCounter />
           <ImagePanels />
           <StatusBanner />
           <ActionGrid />

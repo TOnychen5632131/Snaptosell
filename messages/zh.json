@@ -72,5 +72,11 @@
     "termsOfService": "服务条款",
     "logout": "退出登录",
     "version": "版本号 1.0.0"
+  },
+  "ProcessedCounter": {
+    "heading": "社区里程碑",
+    "title": "累计处理的图片",
+    "description": "每一次修图都在帮助模型学习，让下一位卖家获得更好的效果。",
+    "metricLabel": "已处理图片"
   }
 }

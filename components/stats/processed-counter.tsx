@@ -61,7 +61,7 @@ export const ProcessedCounter = () => {
   );
 
   return (
-    <section className="rounded-card bg-white/90 p-6 shadow-soft">
+    <section className="glass-card p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium uppercase tracking-wide text-brand-primary">
@@ -73,15 +73,16 @@ export const ProcessedCounter = () => {
           <StatusMessage error={error} isLoading={isLoading} />
 
         </div>
-        <div className="relative overflow-hidden rounded-2xl bg-slate-900 px-6 py-4 text-white shadow-inner">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60">
-            <div className="h-full w-full -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-white/50 bg-slate-900/70 px-6 py-5 text-white shadow-[0_22px_45px_-28px_rgba(15,23,42,0.9)] backdrop-blur-xl">
+          <div className="pointer-events-none absolute inset-0 opacity-70">
+            <div className="absolute -inset-x-16 top-0 h-full bg-[conic-gradient(from_90deg_at_50%_50%,rgba(255,255,255,0.08)_0deg,rgba(255,255,255,0)_120deg,rgba(255,255,255,0.25)_240deg,rgba(255,255,255,0)_360deg)]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
           </div>
           <div className="relative z-10 flex flex-col items-end text-right">
             <span className="text-xs font-medium uppercase tracking-[0.3em] text-white/60">
               {t("metricLabel")}
             </span>
-            <span className="mt-1 font-mono text-4xl font-bold leading-none tabular-nums">
+            <span className="mt-1 font-mono text-4xl font-bold leading-none tabular-nums drop-shadow-[0_8px_18px_rgba(15,23,42,0.6)]">
               {formattedTotal}
             </span>
           </div>

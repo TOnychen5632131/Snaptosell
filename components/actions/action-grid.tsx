@@ -44,16 +44,20 @@ export const ActionGrid = () => {
       <input id="camera-input" type="file" accept="image/*" capture="environment" className="hidden" onChange={onChange} />
       <input id="library-input" type="file" accept="image/*" className="hidden" onChange={onChange} />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
-        <button className="action-button bg-gradient-to-br from-blue-500 to-blue-600 text-white" onClick={triggerCamera} disabled={isPreparing || isSubmitting}>
+        <button
+          className="action-button action-button--primary"
+          onClick={triggerCamera}
+          disabled={isPreparing || isSubmitting}
+        >
           <Camera className="h-6 w-6" />
           <span>{t('takePhoto')}</span>
         </button>
-        <button className="action-button bg-white text-slate-700 hover:bg-slate-100" onClick={triggerLibrary} disabled={isPreparing || isSubmitting}>
+        <button className="action-button" onClick={triggerLibrary} disabled={isPreparing || isSubmitting}>
           <ImagePlus className="h-6 w-6 text-brand-primary" />
           <span>{t('fromAlbum')}</span>
         </button>
         <button
-          className="action-button bg-gradient-to-br from-emerald-500 to-emerald-600 text-white disabled:from-slate-400 disabled:to-slate-500"
+          className="action-button action-button--emerald"
           onClick={() => startJob("enhance", supabase, { costCredits: 0 })}
           disabled={isSubmitting || (!currentJob?.localFile && !currentJob?.originalStoragePath)}
         >
@@ -61,7 +65,7 @@ export const ActionGrid = () => {
           <span>{isSubmitting ? t('uploading') : t('enhanceQuality')}</span>
         </button>
         <button
-          className="action-button bg-gradient-to-br from-purple-500 to-purple-600 text-white disabled:from-slate-400 disabled:to-slate-500"
+          className="action-button action-button--violet"
           onClick={() => startJob("product", supabase, { costCredits: 600 })}
           disabled={isSubmitting || (!currentJob?.localFile && !currentJob?.originalStoragePath)}
         >
@@ -69,17 +73,17 @@ export const ActionGrid = () => {
           <span>{isSubmitting ? t('processing') : t('generateProductPhoto')}</span>
         </button>
         <button
-          className="action-button bg-white text-slate-700 hover:bg-slate-100"
+          className="action-button action-button--rose"
           onClick={() => {
             void share();
           }}
           disabled={isSubmitting}
         >
-          <Share2 className="h-6 w-6 text-brand-primary" />
+          <Share2 className="h-6 w-6" />
           <span>{t('share')}</span>
         </button>
         <button
-          className="action-button bg-white text-slate-700 hover:bg-slate-100"
+          className="action-button"
           onClick={download}
           disabled={!currentJob?.processedImageUrl}
         >

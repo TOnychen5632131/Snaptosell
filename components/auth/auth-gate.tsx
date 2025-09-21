@@ -27,18 +27,32 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
 
   if (!session) {
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-16 text-center">
+      <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950 px-6 py-10 text-white">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(56,189,248,0.22),transparent_55%),radial-gradient(140%_140%_at_90%_-10%,rgba(192,132,252,0.2),transparent_60%),linear-gradient(160deg,rgba(15,23,42,0.95)_0%,rgba(15,23,42,0.62)_48%,rgba(30,41,59,0.85)_100%)]" />
           <div className="absolute inset-0 bg-white/8 mix-blend-soft-light" />
         </div>
-        <div className="glass-card w-full max-w-xl px-10 py-12 text-center text-slate-800">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-800">Login to continue using EasyPic</h1>
-          <p className="mx-auto mt-3 max-w-md text-sm text-slate-600">
-            Use email magic link or Google one-click login to unlock credit sync, history, and cloud processing.
-          </p>
-          <div className="mt-8 flex justify-center">
-            <SignInButton />
+        <div className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-dashed border-white/50 bg-white/10 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/70">
+              Logo
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium uppercase tracking-[0.45em] text-white/70">Welcome to</p>
+              <h1 className="text-4xl font-semibold tracking-tight text-white">Snaptosell</h1>
+              <p className="text-base text-white/80">Capture products. Create listings. Convert faster.</p>
+            </div>
+          </div>
+          <div className="mt-10">
+            <div className="glass-card w-full px-6 py-8 text-left text-slate-800 shadow-[0_28px_60px_-40px_rgba(15,23,42,0.9)]">
+              <h2 className="text-lg font-semibold text-slate-900">Sign in to continue</h2>
+              <p className="mt-2 text-sm text-slate-600">
+                Use your email for a magic link or connect instantly with Google to sync credits, history, and cloud processing.
+              </p>
+              <div className="mt-8">
+                <SignInButton />
+              </div>
+            </div>
           </div>
         </div>
       </div>

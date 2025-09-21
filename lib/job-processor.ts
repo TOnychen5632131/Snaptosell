@@ -245,8 +245,14 @@ export const processImageJob = async (
   if (updateError || !updatedJob) {
     throw new Error(updateError?.message ?? "Failed to update job record");
   }
-
   const { error: incrementError } = await (client.rpc("increment_processed_total", { step: 1 }) as any);
+  if (incrementError) {
+    console.error("increment_processed_total error", incrementError);
+  }
+
+  return updatedJob as ImageJobRow;
+};
+
   if (incrementError) {
     console.error("increment_processed_total error", incrementError);
   }

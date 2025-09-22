@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title>Snaptosell Logo</title>
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#0f172a" />
+  <path
+    d="M64 28c-14.36 0-26 11.64-26 26s11.64 26 26 26 26-11.64 26-26c0-3.64-.76-7.07-2.13-10.19l8.67-8.67a6 6 0 0 0-8.48-8.48l-8.67 8.67A25.8 25.8 0 0 0 64 28Zm0 12c7.72 0 14 6.28 14 14s-6.28 14-14 14-14-6.28-14-14 6.28-14 14-14Z"
+    fill="url(#gradient)"
+  />
+  <path
+    d="M40 82c0-3.31 2.69-6 6-6h36c3.31 0 6 2.69 6 6v12c0 3.31-2.69 6-6 6H46c-3.31 0-6-2.69-6-6V82Zm22 0a6 6 0 1 0 12 0h-12Z"
+    fill="#e2e8f0"
+  />
+</svg>

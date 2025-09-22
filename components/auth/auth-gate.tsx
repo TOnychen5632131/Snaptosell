@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
-import logoImage from "@/lib/logo.png";
 import { SignInButton } from "@/components/auth/sign-in-button";
 import { ContactPromoBanner } from "@/components/marketing/contact-promo-banner";
 
@@ -42,9 +41,11 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
           <div className="flex flex-col items-center text-center">
             <div className="mb-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-white/50 bg-white/10">
               <Image
-                src={logoImage}
+                src="/logo.svg"
                 alt="Snaptosell logo"
                 className="h-16 w-16 object-contain"
+                width={64}
+                height={64}
                 priority
               />
             </div>

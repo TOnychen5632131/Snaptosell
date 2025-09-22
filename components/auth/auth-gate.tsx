@@ -4,6 +4,7 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import logoImage from "@/lib/logo.png";
 import { SignInButton } from "@/components/auth/sign-in-button";
+import { ContactPromoBanner } from "@/components/marketing/contact-promo-banner";
 
 export const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useSessionContext();
@@ -33,6 +34,9 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(56,189,248,0.22),transparent_55%),radial-gradient(140%_140%_at_90%_-10%,rgba(192,132,252,0.2),transparent_60%),linear-gradient(160deg,rgba(15,23,42,0.95)_0%,rgba(15,23,42,0.62)_48%,rgba(30,41,59,0.85)_100%)]" />
           <div className="absolute inset-0 bg-white/8 mix-blend-soft-light" />
+        </div>
+        <div className="relative z-20 mx-auto w-full max-w-md pt-4">
+          <ContactPromoBanner className="backdrop-blur-xl" />
         </div>
         <div className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
           <div className="flex flex-col items-center text-center">

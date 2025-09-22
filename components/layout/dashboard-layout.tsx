@@ -1,5 +1,7 @@
 "use client";
 
+import { ContactPromoBanner } from "@/components/marketing/contact-promo-banner";
+
 export const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -7,7 +9,12 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
         <div className="absolute inset-0 bg-[radial-gradient(130%_130%_at_50%_-15%,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.75)_45%,rgba(226,232,240,0.25)_80%,transparent_100%),radial-gradient(140%_140%_at_100%_10%,rgba(221,214,254,0.45),transparent_75%),radial-gradient(140%_140%_at_0%_100%,rgba(191,219,254,0.42),transparent_78%)]" />
         <div className="absolute inset-0 bg-white/60 mix-blend-screen" />
       </div>
-      <div className="mx-auto w-full max-w-6xl pb-24 pt-safe-top">{children}</div>
+      <div className="mx-auto w-full max-w-6xl pb-24 pt-safe-top">
+        <div className="px-4 pt-6 sm:pt-8">
+          <ContactPromoBanner tone="light" className="mx-auto max-w-3xl" />
+        </div>
+        {children}
+      </div>
     </div>
   );
 };

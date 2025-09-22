@@ -1,6 +1,8 @@
 "use client";
+import Image from "next/image";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
+import logoImage from "@/lib/logo.png";
 import { SignInButton } from "@/components/auth/sign-in-button";
 
 export const AuthGate = ({ children }: { children: React.ReactNode }) => {
@@ -34,8 +36,13 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
         </div>
         <div className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
           <div className="flex flex-col items-center text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-dashed border-white/50 bg-white/10 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/70">
-              Logo
+            <div className="mb-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-white/50 bg-white/10">
+              <Image
+                src={logoImage}
+                alt="Snaptosell logo"
+                className="h-16 w-16 object-contain"
+                priority
+              />
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium uppercase tracking-[0.45em] text-white/70">Welcome to</p>

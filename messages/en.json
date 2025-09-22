@@ -1,5 +1,8 @@
 {
   "ActionGrid": {
+    "step1Label": "Step 1 · Choose your photo source",
+    "step2Label": "Step 2 · Pick a tool",
+    "step3Label": "Step 3 · Share or download",
     "takePhoto": "Take Photo",
     "fromAlbum": "From Album",
     "enhanceQuality": "Enhance Quality",

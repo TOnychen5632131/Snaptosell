@@ -46,6 +46,9 @@ export const ActionGrid = () => {
 
       <section className="toolbar">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
+          <p className="col-span-2 text-xs font-medium text-slate-500 sm:col-span-6">
+            {t('step1Label')}
+          </p>
           <button
             className="action-button action-button--primary"
             onClick={triggerCamera}
@@ -58,6 +61,9 @@ export const ActionGrid = () => {
             <ImagePlus className="h-6 w-6 text-brand-primary" />
             <span>{t('fromAlbum')}</span>
           </button>
+          <p className="col-span-2 mt-2 text-xs font-medium text-slate-500 sm:col-span-6">
+            {t('step2Label')}
+          </p>
           <button
             className="action-button action-button--emerald"
             onClick={() => startJob("enhance", supabase, { costCredits: 0 })}
@@ -74,6 +80,9 @@ export const ActionGrid = () => {
             {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : <Package className="h-6 w-6" />}
             <span>{isSubmitting ? t('processing') : t('generateProductPhoto')}</span>
           </button>
+          <p className="col-span-2 mt-2 text-xs font-medium text-slate-500 sm:col-span-6">
+            {t('step3Label')}
+          </p>
           <button
             className="action-button action-button--rose"
             onClick={() => {

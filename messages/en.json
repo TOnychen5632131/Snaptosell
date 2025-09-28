@@ -2,6 +2,13 @@
   "ActionGrid": {
     "step1Label": "Step 1 · Choose your photo source",
     "step2Label": "Step 2 · Pick a tool",
+    "productTypeLabel": "Choose the product type",
+    "productTypeDefault": "Default",
+    "productTypeDefaultHint": "Balanced enhancement for most products.",
+    "productTypeApparel": "Apparel",
+    "productTypeApparelHint": "Highlight fabrics and garment details with a clean studio vibe.",
+    "productTypeModel": "Model Wearing Apparel",
+    "productTypeModelHint": "Polish model shots while keeping clothing textures and proportions true.",
     "step3Label": "Step 3 · Share or download",
     "takePhoto": "Take Photo",
     "fromAlbum": "From Album",

@@ -117,7 +117,46 @@ const extractImageData = (message: any) => {
   return null;
 };
 
-const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mimeType: string }> => {
+type ProductVariant = "default" | "apparel" | "model";
+
+const resolveProductVariant = (mode?: string | null): ProductVariant => {
+  if (!mode) return "default";
+  if (mode === "product" || mode === "product-default") return "default";
+  if (mode === "product-apparel") return "apparel";
+  if (mode === "product-model") return "model";
+
+  if (mode.startsWith("product-")) {
+    const suffix = mode.replace(/^product-/, "");
+    if (suffix === "clothing") {
+      // Support legacy naming if it ever appears.
+      return "apparel";
+    }
+  }
+
+  return "default";
+};
+
+const buildProductPrompt = (mode?: string | null) => {
+  const variant = resolveProductVariant(mode);
+  const baseInstruction =
+    "You are an e-commerce product photo editor. Please clean and enhance the input product image without changing the product shape, material, or brand characteristics, and output high-quality, marketable main images (need to match product context backgrounds, such as kitchen for food, more ocean elements for pearls, more flowers for nail art). Avoid adding any text, watermarks, logos, or additional props, do not change product color/proportion/structure. Composition with appropriate white space to meet Taobao/JD/Amazon main image aesthetics and standards. Clear resolution, no noise or moiré patterns.";
+
+  const variantAdditions: Record<ProductVariant, string> = {
+    default: "",
+    apparel:
+      "Focus on apparel presentation: preserve true fabric textures, drape, and color. Ensure the garment looks neatly styled with natural folds, remove distractions, and use a clean studio-style background or subtle scene that highlights the clothing without introducing extra props.",
+    model:
+      "The clothing is worn by a model. Retouch skin and hair gently while keeping natural body proportions. Preserve garment details, fabrics, and colors, and keep the background simple or editorial to compliment the outfit without overpowering the product. Maintain a polished, ready-for-e-commerce appearance."
+  };
+
+  const addition = variantAdditions[variant];
+  return addition ? `${baseInstruction} ${addition}` : baseInstruction;
+};
+
+const callAihubmix = async (
+  base64Image: string,
+  prompt: string
+): Promise<{ buffer: Buffer; mimeType: string }> => {
   if (!API_KEY) {
     throw new Error("AIHUBMIX_API_KEY not configured");
   }
@@ -139,7 +178,7 @@ const callAihubmix = async (base64Image: string): Promise<{ buffer: Buffer; mime
         content: [
           {
             type: "text",
-            text: "You are an e-commerce product photo editor. Please clean and enhance the input product image without changing the product shape, material, or brand characteristics, and output high-quality, marketable main images (need to match product context backgrounds, such as kitchen for food, more ocean elements for pearls, more flowers for nail art). Avoid adding any text, watermarks, logos, or additional props, do not change product color/proportion/structure. Composition with appropriate white space to meet Taobao/JD/Amazon main image aesthetics and standards. Clear resolution, no noise or moiré patterns.",
+            text: prompt,
           },
           {
             type: "image_url",
@@ -214,10 +253,14 @@ export async function processImageJob(
   let processedPath = "";
   let processedImageUrl = "";
 
-  if (job.mode === "product") {
+  const normalizedMode = job.mode ?? "product";
+  const isProductMode = normalizedMode === "product" || normalizedMode.startsWith("product-");
+
+  if (isProductMode) {
     const originalBuffer = await downloadOriginalImage(client, job.original_storage_path);
     const base64Image = originalBuffer.toString("base64");
-    const { buffer: generatedBuffer, mimeType } = await callAihubmix(base64Image);
+    const prompt = buildProductPrompt(normalizedMode);
+    const { buffer: generatedBuffer, mimeType } = await callAihubmix(base64Image, prompt);
     const result = await uploadGeneratedImage(client, job, generatedBuffer, mimeType);
     processedPath = result.path;
     processedImageUrl = result.publicUrl;

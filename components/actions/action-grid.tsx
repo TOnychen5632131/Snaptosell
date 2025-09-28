@@ -4,13 +4,38 @@ import { useTranslations } from "next-intl";
 import { useUpload } from "@/hooks/use-upload";
 import { useJobQueue } from "@/hooks/use-job-queue";
 import { useSupabase } from "@/providers/supabase-provider";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 
 export const ActionGrid = () => {
   const t = useTranslations('ActionGrid');
   const { triggerCamera, triggerLibrary, isPreparing, handleFile } = useUpload();
   const { currentJob, startJob, share, isSubmitting } = useJobQueue();
   const supabase = useSupabase();
+  const [productMode, setProductMode] = useState<"product-default" | "product-apparel" | "product-model">(
+    "product-default"
+  );
+
+  const productOptions: Array<{
+    id: "product-default" | "product-apparel" | "product-model";
+    label: string;
+    description: string;
+  }> = [
+    {
+      id: "product-default",
+      label: t('productTypeDefault'),
+      description: t('productTypeDefaultHint')
+    },
+    {
+      id: "product-apparel",
+      label: t('productTypeApparel'),
+      description: t('productTypeApparelHint')
+    },
+    {
+      id: "product-model",
+      label: t('productTypeModel'),
+      description: t('productTypeModelHint')
+    }
+  ];
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -64,6 +89,30 @@ export const ActionGrid = () => {
           <p className="col-span-2 mt-2 text-xs font-medium text-slate-500 sm:col-span-6">
             {t('step2Label')}
           </p>
+          <div className="col-span-2 flex flex-col gap-2 sm:col-span-6">
+            <p className="text-xs font-medium text-slate-500">{t('productTypeLabel')}</p>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {productOptions.map((option) => {
+                const isActive = productMode === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`rounded-lg border p-3 text-left transition-colors ${
+                      isActive
+                        ? "border-brand-primary bg-brand-primary/10 text-brand-primary"
+                        : "border-slate-200 text-slate-600 hover:border-brand-primary/60 hover:text-brand-primary"
+                    }`}
+                    onClick={() => setProductMode(option.id)}
+                    disabled={isSubmitting}
+                  >
+                    <span className="block text-sm font-semibold">{option.label}</span>
+                    <span className="mt-1 block text-xs text-slate-500">{option.description}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <button
             className="action-button action-button--emerald"
             onClick={() => startJob("enhance", supabase, { costCredits: 0 })}
@@ -74,7 +123,7 @@ export const ActionGrid = () => {
           </button>
           <button
             className="action-button action-button--violet"
-            onClick={() => startJob("product", supabase, { costCredits: 600 })}
+            onClick={() => startJob(productMode, supabase, { costCredits: 600 })}
             disabled={isSubmitting || (!currentJob?.localFile && !currentJob?.originalStoragePath)}
           >
             {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : <Package className="h-6 w-6" />}

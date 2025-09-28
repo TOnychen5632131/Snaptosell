@@ -2,6 +2,13 @@
   "ActionGrid": {
     "step1Label": "Step 1 · Choose your photo source",
     "step2Label": "Step 2 · Pick a tool",
+    "productTypeLabel": "选择产品类型",
+    "productTypeDefault": "默认",
+    "productTypeDefaultHint": "适用于大部分商品的通用优化。",
+    "productTypeApparel": "服装",
+    "productTypeApparelHint": "突出面料与版型，营造干净的棚拍效果。",
+    "productTypeModel": "模特穿服装",
+    "productTypeModelHint": "自然润饰模特，保持服装质感与比例。",
     "step3Label": "Step 3 · Share or download",
     "takePhoto": "拍摄商品图",
     "fromAlbum": "从相册选择",

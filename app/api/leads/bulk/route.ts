@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
   const { error } = await (supabase.from("bulk_leads") as any).upsert(
     { email, source },
-    { onConflict: "email", ignoreDuplicates: true }
+    { onConflict: "bulk_leads_email_idx", ignoreDuplicates: true }
   );
 
   if (error) {

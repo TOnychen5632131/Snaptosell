@@ -26,9 +26,10 @@ export async function POST(request: Request) {
 
   const supabase = createClient<Database>(serviceUrl, serviceRole, { auth: { persistSession: false } });
 
-  const { error } = await supabase
-    .from("bulk_leads")
-    .upsert({ email, source }, { onConflict: "email", ignoreDuplicates: true });
+  const { error } = await (supabase.from("bulk_leads") as any).upsert(
+    { email, source },
+    { onConflict: "email", ignoreDuplicates: true }
+  );
 
   if (error) {
     console.error("Failed to store bulk lead", error);

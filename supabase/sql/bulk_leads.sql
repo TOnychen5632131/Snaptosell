@@ -6,7 +6,19 @@ create table if not exists public.bulk_leads (
   created_at timestamptz not null default timezone('utc', now())
 );
 
-create unique index if not exists bulk_leads_email_idx on public.bulk_leads (lower(email));
+drop index if exists public.bulk_leads_email_idx;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'bulk_leads_email_key'
+  ) then
+    alter table public.bulk_leads
+      add constraint bulk_leads_email_key unique (email);
+  end if;
+end $$;
 
 alter table public.bulk_leads enable row level security;
 

@@ -23,6 +23,9 @@
     "title": "EasyPic Web",
     "description": "E-commerce Product Image Enhancement"
   },
+  "AuthGate": {
+    "creatorClubCta": "Explore Creator Content Club"
+  },
   "HeaderCard": {
     "defaultUser": "EasyPic User",
     "welcomeBack": "Welcome back, {displayName}",

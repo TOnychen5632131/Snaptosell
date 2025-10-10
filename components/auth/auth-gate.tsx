@@ -1,13 +1,17 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { SignInButton } from "@/components/auth/sign-in-button";
 import { ContactPromoBanner } from "@/components/marketing/contact-promo-banner";
 
 export const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useSessionContext();
   const [mounted, setMounted] = useState(false);
+  const locale = useLocale();
+  const t = useTranslations("AuthGate");
 
   useEffect(() => {
     if (!isLoading) setMounted(true);
@@ -54,6 +58,14 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
               <h1 className="text-4xl font-semibold tracking-tight text-white">Snaptosell</h1>
               <p className="text-base text-white/80">Capture products. Create listings. Convert faster.</p>
             </div>
+          </div>
+          <div className="mt-8 flex justify-center">
+            <Link
+              href={`/${locale}/creator-content-club`}
+              className="inline-flex items-center justify-center rounded-full border border-white/40 bg-white/20 px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            >
+              {t("creatorClubCta")}
+            </Link>
           </div>
           <div className="mt-10">
             <div className="glass-card w-full px-6 py-8 text-left text-slate-800 shadow-[0_28px_60px_-40px_rgba(15,23,42,0.9)]">

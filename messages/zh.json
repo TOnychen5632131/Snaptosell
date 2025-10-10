@@ -23,6 +23,9 @@
     "title": "Snaptosell",
     "description": "电商商品图在线增强"
   },
+  "AuthGate": {
+    "creatorClubCta": "了解 Creator Content Club"
+  },
   "HeaderCard": {
     "defaultUser": "EasyPic 用户",
     "welcomeBack": "欢迎回来，{displayName}",

@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -60,12 +59,12 @@ export const AuthGate = ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
           <div className="mt-8 flex justify-center">
-            <Link
-              href={`/${locale}/creator-content-club`}
+            <a
+              href="http://www.fiverr.com/s/gDWYN4Y"
               className="inline-flex items-center justify-center rounded-full border border-white/40 bg-white/20 px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
             >
               {t("creatorClubCta")}
-            </Link>
+            </a>
           </div>
           <div className="mt-10">
             <div className="glass-card w-full px-6 py-8 text-left text-slate-800 shadow-[0_28px_60px_-40px_rgba(15,23,42,0.9)]">

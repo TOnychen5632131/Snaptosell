@@ -78,7 +78,7 @@ export const ContactPromoBanner = ({
     <form
       onSubmit={handleSubmit}
       className={classNames(
-        "group relative flex w-full flex-col gap-4 rounded-3xl border px-5 py-4 text-sm font-medium backdrop-blur transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:px-6 md:flex-row md:items-center md:justify-between",
+        "group relative flex w-full flex-col gap-4 rounded-3xl border px-5 py-4 text-sm font-medium backdrop-blur transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:px-6 md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-y-4",
         styles.container,
         className,
       )}
@@ -94,12 +94,17 @@ export const ContactPromoBanner = ({
         >
           <Sparkles className="h-4 w-4" />
         </span>
-        <span className="flex flex-col text-left leading-tight">
-          <span className={classNames("text-xs uppercase tracking-[0.22em]", eyebrowTextClass)}>
+        <span className="flex max-w-[16rem] flex-col gap-1 text-left leading-snug md:max-w-[18rem]">
+          <span className={classNames("text-[0.65rem] uppercase tracking-[0.18em]", eyebrowTextClass)}>
             Need bulk edits?
           </span>
-          <span className="text-sm font-semibold">Leave your email and we&apos;ll reach out.</span>
-          <span className={classNames("text-xs", tone === "light" ? "text-slate-500" : "text-white/80")}>
+          <span className="text-sm font-semibold leading-tight">Leave your email and we&apos;ll reach out.</span>
+          <span
+            className={classNames(
+              "text-xs leading-relaxed",
+              tone === "light" ? "text-slate-500" : "text-white/80",
+            )}
+          >
             First video only $0.10 — we handle the rest.
           </span>
         </span>

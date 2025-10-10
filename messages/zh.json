@@ -31,6 +31,7 @@
     "loggedOutPrompt": "登录后可解锁云端修图、积分同步与邀请奖励。",
     "credits": "积分 {balance}",
     "freeUses": "免费次数 {freeUses}",
+    "creatorClub": "内容俱乐部",
     "settings": "设置"
   },
   "ImagePanels": {
@@ -95,5 +96,36 @@
     "statusLoading": "正在同步最新数据…",
     "statusError": "统计数据加载失败：{message}"
 
+  },
+  "CreatorContentClub": {
+    "metaTitle": "Creator Content Club — SnapToSell",
+    "metaDescription": "订阅即可每天收到可直接发布的商品图，并每周获赠为 Instagram 定制的短视频。",
+    "windowLabel": "www.snaptosell.com",
+    "heading": "选择你的会员计划",
+    "tierLabel": "会员计划",
+    "tierName": "Creator Content Club",
+    "price": "$9.99 / 月",
+    "joinCta": "立即加入",
+    "joinLoading": "跳转中…",
+    "highlights": [
+      "每天获得一张可直接发布的商品图。",
+      "每周收到一条短视频，已配好文案与标签。",
+      "所有素材都准备好，直接发布到 Instagram 即可。"
+    ],
+    "giftLabel": "为好友赠送 Creator Content Club 会员",
+    "giftHref": "#",
+    "giftCta": "立即赠送",
+    "cancelHeading": "已取消结帐",
+    "cancelBody": "本次不会扣款，你可随时重新开启。",
+    "emailHeading": "支付成功！",
+    "emailDescription": "留下你常用的邮箱，我们会每天把最新素材发送给你。",
+    "emailInputLabel": "联系邮箱",
+    "emailPlaceholder": "you@example.com",
+    "emailSubmit": "提交",
+    "emailSubmitting": "提交中…",
+    "emailSuccess": "收到！我们很快会通过邮件联系你。",
+    "emailError": "暂时无法保存邮箱，请稍后再试。",
+    "emailInvalid": "请输入有效的邮箱地址。",
+    "siteCopyright": "© SnapToSell — Creator Content Club"
   }
 }

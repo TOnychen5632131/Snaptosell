@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { startCheckout } from "@/lib/start-checkout";
 
 export const PurchaseCreditsButton = () => {
   const [loading, setLoading] = useState(false);
@@ -7,12 +8,8 @@ export const PurchaseCreditsButton = () => {
   const handlePurchase = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/purchase/start", { method: "POST" });
-      const payload = await res.json().catch(() => ({}));
-      if (!res.ok || !payload?.url) {
-        throw new Error(payload?.error ?? "Unable to create payment order");
-      }
-      window.location.href = payload.url;
+      const url = await startCheckout();
+      window.location.href = url;
     } catch (error) {
       console.error(error);
       const message = error instanceof Error ? error.message : "Payment creation failed, please try again later";

@@ -31,6 +31,7 @@
     "loggedOutPrompt": "Log in to unlock cloud processing, credit sync, and referral rewards.",
     "credits": "Credits: {balance}",
     "freeUses": "Free uses: {freeUses}",
+    "creatorClub": "Creator Club",
     "settings": "Settings"
   },
   "ImagePanels": {
@@ -95,5 +96,36 @@
     "statusLoading": "Fetching the latest total...",
     "statusError": "Unable to load stats: {message}"
 
+  },
+  "CreatorContentClub": {
+    "metaTitle": "Creator Content Club — SnapToSell",
+    "metaDescription": "Subscribe to get a ready-to-post product image every day plus weekly videos tailored for Instagram.",
+    "windowLabel": "www.snaptosell.com",
+    "heading": "Choose your membership",
+    "tierLabel": "Membership",
+    "tierName": "Creator Content Club",
+    "price": "$9.99 / month",
+    "joinCta": "Join Now",
+    "joinLoading": "Redirecting…",
+    "highlights": [
+      "Get one ready-to-post image every day.",
+      "Receive one short, dynamic video every week — already paired with captions and hashtags.",
+      "Everything is prepared for your Instagram. Just post."
+    ],
+    "giftLabel": "Gift a Creator Content Club membership",
+    "giftHref": "#",
+    "giftCta": "Gift Now",
+    "cancelHeading": "Checkout canceled",
+    "cancelBody": "No charge was made. You can start again any time.",
+    "emailHeading": "You're in!",
+    "emailDescription": "Leave your best email so we can deliver fresh creative drops straight to your inbox.",
+    "emailInputLabel": "Contact email",
+    "emailPlaceholder": "you@example.com",
+    "emailSubmit": "Send",
+    "emailSubmitting": "Sending…",
+    "emailSuccess": "All set! We'll reach out soon.",
+    "emailError": "Unable to save your email right now. Please try again later.",
+    "emailInvalid": "Please enter a valid email address.",
+    "siteCopyright": "© SnapToSell — Creator Content Club"
   }
 }

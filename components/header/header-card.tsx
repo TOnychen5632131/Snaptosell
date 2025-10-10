@@ -1,6 +1,7 @@
 "use client";
+import Link from "next/link";
 import { Coins, Gift, LogIn, LogOut, Settings } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useProfile } from "@/hooks/use-profile";
 import { useCredits } from "@/hooks/use-credits";
@@ -12,6 +13,7 @@ export const HeaderCard = () => {
   const { profile } = useProfile();
   const { balance, freeUses } = useCredits();
   const { session } = useSessionContext();
+  const locale = useLocale();
 
   const isLoggedIn = Boolean(session);
   const displayName = profile?.display_name ?? session?.user.email ?? t('defaultUser');
@@ -49,6 +51,12 @@ export const HeaderCard = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <Link
+            href={`/${locale}/creator-content-club`}
+            className="inline-flex items-center justify-center rounded-full border border-white/60 bg-white/50 px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_18px_30px_-22px_rgba(37,99,235,0.35)] transition hover:-translate-y-0.5 hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+          >
+            {t('creatorClub')}
+          </Link>
           {isLoggedIn && <PurchaseCreditsButton />}
           <button
             onClick={openSettingsDrawer}
